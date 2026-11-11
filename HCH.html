@@ -1,0 +1,2443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hormetic Cell Health</title>
+<meta name="description" content="HCH is a continuous health operating system: one living model of your biology and of the life you actually lead.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,100..800&amp;family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout: one fixed stage. Words hold the left third, the model holds the rest, instruments run along the bottom edge.
+     Colour carries meaning throughout: cool is biology, warm is behaviour. */
+  --ink:#05090d;
+  --paper:#f1ecdf;
+  --soft:#c9cdc5;
+  --mute:#8499a0;
+  --bio:#66ebcf;
+  --life:#ffab52;
+  --alert:#ff6b6b;
+  --line:rgba(241,236,223,.16);
+  --display:'Newsreader','Iowan Old Style','Palatino Linotype',Georgia,serif;
+  --mono:'Martian Mono',ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  --pad:clamp(18px,5vw,72px);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{height:100%;background:var(--ink);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;min-height:100%;background:var(--ink);color:var(--paper);font-family:var(--display);font-size:17px;line-height:1.5;font-optical-sizing:auto;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+#gl{position:fixed;inset:0;z-index:0;display:block;width:100%;height:100%}
+#track{position:relative;width:1px;pointer-events:none}
+.anchor{position:absolute;left:0;width:1px;height:1px}
+p,h1,h2,h3{margin:0}
+button{font:inherit;color:inherit}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--bio);outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+.m{font-family:var(--mono);font-stretch:87.5%;font-size:.69rem;line-height:1.5;letter-spacing:.015em;color:var(--mute);font-variant-numeric:tabular-nums}
+
+/* ---- top bar */
+.top{position:fixed;z-index:20;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;padding:16px var(--pad);pointer-events:none}
+.top>*{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:11px;margin-right:auto;text-decoration:none}
+.brand svg{flex:none;width:26px;height:26px}
+.brand b{font:500 .78rem/1 var(--mono);letter-spacing:.14em}
+.brand i{font:italic 300 .98rem/1 var(--display);color:var(--mute)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font:400 .7rem/1 var(--mono);font-stretch:87.5%;letter-spacing:.02em;white-space:nowrap;color:var(--paper);text-decoration:none;background:rgba(5,9,13,.4);border:1px solid var(--line);border-radius:999px;padding:10px 15px;cursor:pointer;transition:border-color .2s,background .2s,color .2s}
+.btn:hover{border-color:var(--paper)}
+.btn.solid{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.btn.solid:hover{background:#fff;border-color:#fff}
+.btn[disabled]{opacity:.4;cursor:default}
+
+/* ---- chapters: fixed layers that the scroll position switches between */
+.ch{position:fixed;inset:0;z-index:10;display:grid;grid-template-columns:minmax(0,29rem) minmax(0,1fr) minmax(0,21.5rem);column-gap:28px;align-items:center;padding:84px var(--pad) 98px;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility 0s linear .4s}
+.ch.on{opacity:1;visibility:visible;transition:opacity .7s ease .1s,visibility 0s}
+.ch::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(5,9,13,.82) 0%,rgba(5,9,13,.55) 24%,rgba(5,9,13,0) 50%)}
+.copy{grid-column:1;min-width:0;pointer-events:auto}
+.side{grid-column:3;min-width:0;pointer-events:auto}
+h1,h2,h3{font-family:var(--display);font-weight:300;letter-spacing:-.02em;text-wrap:balance}
+h1{font-size:clamp(1.8rem,min(3.7vw,6.6vh),4.5rem);line-height:1.04}
+h1 .l{display:block}
+h1 .l.bio{color:#a8ede0}
+h1 .l.life{color:#ffcd98}
+h2{font-size:clamp(1.65rem,min(3vw,5.4vh),3.2rem);line-height:1.06}
+h3{font-size:1.55rem;line-height:1.1;letter-spacing:-.01em}
+.lede{max-width:31em;margin-top:1.1em;font-size:clamp(1rem,.3vw + .93rem,1.14rem);line-height:1.5;color:var(--soft)}
+.key{display:flex;flex-wrap:wrap;gap:8px 22px;margin:1.6em 0 0;padding:0;list-style:none}
+.key li{display:flex;align-items:center;gap:8px}
+.sw{width:8px;height:8px;border-radius:50%;background:var(--bio);box-shadow:0 0 10px var(--bio)}
+.sw.life{background:var(--life);box-shadow:0 0 10px var(--life)}
+
+/* legends: a rule along the top, the way a figure caption hangs under its plate */
+.panel{padding:13px 16px 15px;border-top:1px solid var(--paper);background:linear-gradient(180deg,rgba(6,13,17,.8),rgba(6,13,17,.52));-webkit-backdrop-filter:blur(7px);backdrop-filter:blur(7px)}
+.fine{margin-top:12px;font-size:.63rem}
+
+#s-overview{align-items:end}
+#s-overview .copy{grid-column:1 / span 2;padding-bottom:3vh}
+
+#s-fragments{grid-template-columns:minmax(0,1fr)}
+#s-fragments::before{background:radial-gradient(ellipse 36% 32% at 50% 50%,rgba(5,9,13,.74),rgba(5,9,13,0))}
+#s-fragments .copy{justify-self:center;max-width:31rem;text-align:center}
+#s-fragments .lede{margin-left:auto;margin-right:auto}
+html:not(.ringed) #s-fragments{align-items:end}
+html:not(.ringed) #s-fragments::before{background:linear-gradient(0deg,rgba(5,9,13,.92) 0%,rgba(5,9,13,.75) 24%,rgba(5,9,13,0) 44%)}
+.tally{margin-top:1.3em}
+
+#s-model .copy{align-self:stretch;display:flex;flex-direction:column;justify-content:space-between;gap:20px;padding:2vh 0 0}
+.systems{display:flex;flex-direction:column;margin:0;padding:0;list-style:none}
+.systems button{all:unset;display:flex;align-items:center;gap:12px;padding:4px 0;font:300 1.1rem/1.2 var(--display);color:var(--mute);cursor:pointer;transition:color .25s}
+.systems button::before{content:"";width:16px;height:1px;background:currentColor;transition:width .3s,background .3s}
+.systems button:hover,.systems button[aria-pressed="true"]{color:var(--paper)}
+.systems button[aria-pressed="true"]::before{width:40px;background:var(--bio)}
+.systems button:focus-visible{outline:2px solid var(--bio);outline-offset:3px}
+#sys-panel{transition:opacity .35s}
+#sys-panel.off{opacity:0;pointer-events:none}
+.panel h3{margin-top:5px}
+.state{margin-top:7px;font-size:1.02rem;line-height:1.38;color:var(--soft)}
+.rows{margin:13px 0 0;padding:0}
+.rows div{display:flex;align-items:baseline;justify-content:space-between;gap:14px;padding:7px 0;border-top:1px solid var(--line)}
+.rows dt{font:400 .69rem/1.4 var(--mono);font-stretch:87.5%;color:var(--mute)}
+.rows dd{margin:0;font-size:1rem;line-height:1.25;text-align:right;font-variant-numeric:tabular-nums}
+.rows dd small{display:block;font:400 .63rem/1.4 var(--mono);font-stretch:87.5%;color:var(--mute)}
+.now{margin-top:2px;padding-top:10px;border-top:1px solid var(--line)}
+.now p+p{margin-top:2px;font-size:1.02rem;line-height:1.36;color:#ffd9ad}
+
+#s-timeline{align-items:end}
+#s-timeline::before{background:linear-gradient(0deg,rgba(5,9,13,.9) 0%,rgba(5,9,13,.6) 30%,rgba(5,9,13,0) 56%)}
+.days{margin:6px 0 0;padding:0;list-style:none}
+.days li{display:grid;grid-template-columns:3.7rem 1fr;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line);opacity:.3;transition:opacity .35s}
+.days li.past{opacity:1}
+.days b{font:400 .69rem/1.4 var(--mono);font-stretch:87.5%;color:var(--mute);transition:color .3s}
+.days li.cur b{color:var(--life)}
+.days span{font-size:.98rem;line-height:1.3}
+.verdict{margin-top:8px;padding-top:9px;border-top:1px solid var(--line);font-size:.98rem;line-height:1.36;color:var(--soft);opacity:0;transition:opacity .5s}
+.verdict.on{opacity:1}
+
+.stations{margin:1.3em 0 0;padding:0;list-style:none;counter-reset:st}
+.stations li{counter-increment:st;border-top:1px solid var(--line)}
+.stations button{all:unset;display:flex;align-items:baseline;gap:12px;width:100%;padding:7px 0;font:300 1.08rem/1.25 var(--display);color:var(--mute);cursor:pointer;transition:color .25s}
+.stations button::before{content:counter(st);width:1.1em;font:400 .69rem/1 var(--mono);color:var(--mute);transition:color .25s}
+.stations button:hover,.stations li.act button{color:var(--paper)}
+.stations li.act button::before{color:var(--bio)}
+.stations button:focus-visible{outline:2px solid var(--bio);outline-offset:-2px}
+.stations .body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
+.stations li.act .body{grid-template-rows:1fr}
+.stations .body p{min-height:0;overflow:hidden;padding-left:calc(1.1em + 12px);font-size:1rem;line-height:1.4;color:var(--soft)}
+.stations li.act .body p{padding-bottom:10px}
+.after{margin-top:12px}
+.case{margin-top:12px}
+.case+.stations{margin-top:.8em}
+
+.dose{max-width:25rem;margin-top:1.5em}
+.meter{position:relative;height:8px;margin:7px 0 5px;overflow:hidden;border-radius:4px;background:rgba(241,236,223,.1)}
+.meter .zone{position:absolute;top:0;bottom:0;left:30%;width:48%;background:rgba(102,235,207,.25)}
+.meter .fill{position:absolute;top:0;bottom:0;left:0;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--life)}
+.dose.over .meter .fill{background:var(--alert)}
+.zl{display:grid;grid-template-columns:30% 48% 22%}
+.zl span:nth-child(2){text-align:center;color:var(--bio)}
+.zl span:nth-child(3){text-align:right}
+.status{min-height:2.8em;margin-top:10px;font-size:1.05rem;line-height:1.35}
+.dose-row{display:flex;align-items:center;gap:16px;margin-top:8px}
+.adapt b{font-weight:400;color:var(--paper)}
+.pips{display:inline-flex;gap:5px;margin-left:8px;vertical-align:middle}
+.pips i{width:7px;height:7px;border:1px solid var(--life);border-radius:50%;transition:background .4s}
+.pips i.on{background:var(--life)}
+.stance{font-size:.98rem;color:var(--mute)}
+
+.stds{max-width:30em;margin-top:1.3em}
+.card{padding:18px 18px 16px;border:1px solid var(--line);border-radius:22px;background:rgba(8,18,24,.86);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 30px 80px rgba(0,0,0,.45)}
+.card .who{margin:4px 0 12px;font-size:1.3rem;line-height:1.2}
+.card ul{margin:6px 0 0;padding:0;list-style:none}
+.card ul li{display:flex;align-items:center;gap:10px;padding:7px 0;border-top:1px solid var(--line);font-size:1rem;line-height:1.3}
+.card ul li::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--bio)}
+.card .terms{display:grid;gap:1px;padding-top:9px;border-top:1px solid var(--line)}
+.card .acts{display:flex;gap:8px;margin-top:14px}
+.card .acts .btn{flex:1}
+.prov{margin-top:10px}
+.prov div{display:grid;grid-template-columns:1fr auto;gap:1px 10px;padding:8px 0;border-top:1px solid var(--line)}
+.prov b{font-weight:400;font-size:1rem;line-height:1.3}
+.prov em{font:normal 400 .66rem/1.9 var(--mono);font-stretch:87.5%;color:var(--bio)}
+.prov em.no{color:var(--life)}
+.prov span{grid-column:1 / -1;font:400 .66rem/1.4 var(--mono);font-stretch:87.5%;color:var(--mute)}
+.hashline{padding-top:9px;border-top:1px solid var(--line)}
+
+.big{margin-top:2px;font-size:3.1rem;font-weight:300;line-height:1;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.bars{margin:12px 0 0;padding:0;list-style:none}
+.bars li{display:grid;grid-template-columns:1fr auto;gap:5px 10px;align-items:baseline;padding:7px 0 8px;border-top:1px solid var(--line)}
+.bars .lab{font:400 .69rem/1.4 var(--mono);font-stretch:87.5%;color:var(--mute)}
+.bars .val{font-size:1rem;line-height:1.2;font-variant-numeric:tabular-nums}
+.bars .bar{grid-column:1 / -1;position:relative;height:2px;background:rgba(241,236,223,.1)}
+.bars .bar i{position:absolute;top:0;bottom:0;left:0;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--life);transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+
+#s-access .copy{grid-column:1 / span 2;max-width:39rem}
+.points{max-width:33rem;margin:1.4em 0 0;padding:0;list-style:none}
+.points li{padding:9px 0;border-top:1px solid var(--line);font-size:1.03rem;line-height:1.4;color:var(--soft)}
+.ask{display:flex;gap:8px;max-width:27rem;margin-top:1.4em}
+.ask input{flex:1;min-width:0;padding:11px 16px;font:400 .76rem/1 var(--mono);color:var(--paper);background:rgba(5,9,13,.55);border:1px solid var(--line);border-radius:999px}
+.ask input::placeholder{color:var(--mute)}
+.note{min-height:1.5em;margin-top:9px;color:var(--life)}
+.legal{max-width:34em;margin-top:6px}
+
+/* ---- things pinned to the model */
+#labels{position:fixed;inset:0;z-index:5;overflow:hidden;pointer-events:none}
+.lb{position:absolute;top:0;left:0;white-space:nowrap;font:400 .66rem/1.2 var(--mono);font-stretch:87.5%;letter-spacing:.015em;color:var(--soft);opacity:0;will-change:transform,opacity}
+.lb.warm{color:#ffd2a1}
+.lb.cool{color:#b4efe4}
+.lb.day{padding:3px 7px;color:var(--ink);background:var(--paper);border-radius:2px}
+#callout{position:fixed;inset:0;z-index:11;width:100%;height:100%;overflow:visible;pointer-events:none;opacity:0;transition:opacity .3s}
+#callout.on{opacity:1}
+#callout path{fill:none;stroke:var(--paper);stroke-width:1;opacity:.75}
+#callout circle{fill:none;stroke:var(--paper);stroke-width:1}
+
+/* ---- instruments */
+#hud{position:fixed;z-index:20;right:0;bottom:0;left:0;display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:0 var(--pad) 18px;pointer-events:none}
+.vitals{display:grid;grid-template-columns:auto auto;gap:0 12px;align-items:end;justify-content:start;pointer-events:auto}
+.vitals canvas{display:block;width:150px;height:34px}
+.bpm{font-size:1.55rem;font-weight:300;line-height:1;font-variant-numeric:tabular-nums}
+.bpm small{margin-left:5px;font:400 .64rem/1 var(--mono);color:var(--mute)}
+.cap{grid-column:1 / -1;margin-top:4px;font-size:.63rem}
+.read{display:grid;gap:1px;text-align:right}
+.cue{position:absolute;bottom:20px;left:50%;display:flex;flex-direction:column;align-items:center;gap:8px;transform:translateX(-50%);opacity:0;transition:opacity .6s}
+.cue.on{opacity:1}
+.cue i{width:1px;height:26px;background:linear-gradient(var(--paper),rgba(241,236,223,0));transform-origin:50% 0;animation:cue 2.6s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0);opacity:1}55%{transform:scaleY(1);opacity:1}100%{transform:scaleY(1);opacity:0}}
+.read span:first-child{color:var(--paper)}
+#prog{position:fixed;z-index:20;bottom:0;left:0;width:100%;height:2px;transform-origin:0 50%;transform:scaleX(0);background:var(--paper);opacity:.55}
+#rail{position:fixed;z-index:20;top:50%;right:14px;display:flex;flex-direction:column;transform:translateY(-50%)}
+#rail a{position:relative;display:flex;align-items:center;justify-content:flex-end;width:34px;height:22px;text-decoration:none}
+#rail a::after{content:"";width:9px;height:1px;background:var(--mute);transition:width .3s,background .3s}
+#rail a.cur::after{width:22px;background:var(--paper)}
+#rail a span{position:absolute;right:38px;padding:3px 7px;white-space:nowrap;font:400 .66rem/1.3 var(--mono);font-stretch:87.5%;color:var(--paper);background:rgba(5,9,13,.86);border-radius:3px;opacity:0;transform:translateX(6px);transition:opacity .2s,transform .2s;pointer-events:none}
+#rail a:hover span,#rail a:focus-visible span{opacity:1;transform:none}
+
+#cursor{position:fixed;z-index:40;top:0;left:0;width:34px;height:34px;margin:-17px 0 0 -17px;border:1px solid #fff;border-radius:50%;pointer-events:none;mix-blend-mode:difference;opacity:0;transition:width .25s,height .25s,margin .25s,opacity .3s,background .25s}
+#cursor.on{opacity:1}
+#cursor.link{width:10px;height:10px;margin:-5px 0 0 -5px;background:#fff}
+#cursor.act{width:74px;height:74px;margin:-37px 0 0 -37px}
+#tip{position:fixed;z-index:40;top:0;left:0;white-space:nowrap;color:var(--paper);pointer-events:none;opacity:0;transition:opacity .2s}
+#tip.on{opacity:1}
+html.ring,html.ring a,html.ring button{cursor:none}
+html.ring input{cursor:text}
+
+#loader{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:var(--ink);transition:opacity .9s ease,visibility 0s linear .9s}
+#loader.done{opacity:0;visibility:hidden}
+#loader svg{width:min(62vw,300px);height:40px;overflow:visible}
+#loader path{fill:none;stroke:var(--bio);stroke-width:1.2;stroke-linejoin:round}
+
+/* ---- two columns when the window is too narrow for three */
+@media (max-width:1180px){
+  .ch{grid-template-columns:minmax(0,27rem) minmax(0,1fr) minmax(0,20rem);column-gap:20px}
+  .brand i{display:none}
+  #s-model.has-sys .intro .lede{display:none}
+}
+/* ---- short windows: let type follow the height */
+@media (max-height:700px) and (min-width:901px){
+  .ch{padding-top:70px;padding-bottom:84px}
+  .lede{font-size:.98rem;line-height:1.42}
+  .stance,.stds,.after,.legal,.case{display:none}
+  .rows div,.bars li,.days li{padding-top:4px;padding-bottom:4px}
+  .stations button{padding:5px 0}
+  .big{font-size:2.4rem}
+}
+/* ---- phones: the model sits in the upper half, the words below it */
+@media (max-width:900px){
+  body{font-size:16px}
+  .ch{display:flex;flex-direction:column;justify-content:flex-end;align-items:stretch;gap:12px;padding:66px 18px 92px}
+  .ch::before{background:linear-gradient(0deg,rgba(5,9,13,.94) 0%,rgba(5,9,13,.8) 34%,rgba(5,9,13,0) 64%)}
+  h1{font-size:clamp(1.7rem,7.4vw,2.5rem)}
+  h2{font-size:clamp(1.5rem,6.4vw,2.2rem)}
+  .lede{margin-top:.8em;font-size:.98rem;line-height:1.42}
+  .key{margin-top:1em}
+  #s-overview .copy{padding-bottom:0}
+  html.ringed #s-fragments{justify-content:center}
+  html:not(.ringed) #s-fragments::before{background:linear-gradient(0deg,rgba(5,9,13,.94) 0%,rgba(5,9,13,.8) 26%,rgba(5,9,13,0) 44%)}
+  #s-clinicians::before{background:linear-gradient(0deg,rgba(5,9,13,.95) 0%,rgba(5,9,13,.86) 52%,rgba(5,9,13,0) 78%)}
+  #s-model .copy{align-self:auto;padding:0;gap:10px}
+  #s-model.has-sys .intro{display:none}
+  .systems{flex-direction:row;gap:14px;margin:0 -18px;padding:2px 18px;overflow-x:auto;scrollbar-width:none}
+  .systems::-webkit-scrollbar{display:none}
+  .systems button{font-size:1rem;white-space:nowrap}
+  .systems button::before{display:none}
+  .systems button[aria-pressed="true"]{text-decoration:underline;text-decoration-color:var(--bio);text-underline-offset:5px;text-decoration-thickness:1px}
+  #s-model:not(.has-sys) #sys-panel{display:none}
+  .panel{padding:11px 13px 12px}
+  .panel h3{font-size:1.3rem}
+  .rows div{padding:5px 0}
+  .fine,.stance,.stds,.after,.legal,.tally,.case{display:none}
+  #s-timeline .lede{display:none}
+  .days li:not(.cur){display:none}
+  .days li.cur{opacity:1}
+  .verdict{display:none}
+  .verdict.on{display:block}
+  .stations{margin-top:.8em}
+  .stations button{padding:5px 0;font-size:1rem}
+  .stations li:not(.act) button{display:none}
+  .stations li:not(.act){border-top:0}
+  .status{min-height:2.7em;font-size:1rem}
+  .card{padding:14px 14px 13px;border-radius:18px}
+  .card .who{margin-bottom:8px;font-size:1.15rem}
+  .card ul li{padding:5px 0}
+  #s-record .lede{display:none}
+  .big{font-size:2.3rem}
+  .bars{display:grid;grid-template-columns:1fr 1fr;column-gap:14px;margin-top:8px}
+  .bars li{padding:5px 0 6px}
+  #s-access .copy{max-width:none}
+  .points li{padding:6px 0;font-size:.96rem}
+  .ask{margin-top:1em}
+  #hud{padding-bottom:14px}
+  .vitals canvas{width:104px;height:26px}
+  .bpm{font-size:1.25rem}
+  .cap{display:none}
+  #rail,.cue{display:none}
+  .top{padding-top:12px;padding-bottom:12px}
+  .top .btn{padding:9px 12px}
+}
+@media (max-width:400px){
+  #sound{display:none}
+}
+
+/* ---- without WebGL the same words read as an ordinary page */
+html.no-gl #gl,html.no-gl #track,html.no-gl #hud,html.no-gl .cue,html.no-gl #prog,html.no-gl #rail,html.no-gl #labels,html.no-gl #callout,html.no-gl #cursor,html.no-gl #tip,html.no-gl #sound{display:none}
+html.no-gl .ch{position:static;display:block;padding:12vh var(--pad);border-top:1px solid var(--line);opacity:1;visibility:visible}
+html.no-gl .ch::before{display:none}
+html.no-gl .side{max-width:26rem;margin-top:2rem}
+html.no-gl .copy{max-width:40rem}
+html.no-gl #s-model .copy{display:block}
+html.no-gl .systems{margin-top:1.5rem}
+html.no-gl #s-fragments .copy{margin:0 auto}
+html.no-gl .verdict{opacity:1}
+html.no-gl .days li{opacity:1}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .ch,.ch.on,.stations .body,.bars .bar i{transition-duration:.01s}
+  .cue i{animation:none}
+}
+
+</style>
+<noscript><style>.ch{position:static;display:block;padding:12vh var(--pad);border-top:1px solid var(--line);opacity:1;visibility:visible}.ch::before,#loader,#gl,#hud,#prog,#track,#cursor,#tip,#sound{display:none}</style></noscript>
+</head>
+<body>
+<canvas id="gl" aria-hidden="true"></canvas>
+
+<header class="top">
+  <a class="brand" href="#overview" aria-label="HCH, Hormetic Cell Health: back to the start">
+    <svg viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="10.4" cy="11.6" r="3.5" fill="currentColor"/><circle cx="17.8" cy="16.6" r="1.4" fill="#ffab52"/></svg>
+    <b>HCH</b><i>Hormetic Cell Health</i>
+  </a>
+  <button class="btn" id="sound" type="button" aria-pressed="false">Sound off</button>
+  <a class="btn solid" href="#access">Request access</a>
+</header>
+
+<nav id="rail" aria-label="Chapters"></nav>
+
+<main id="ui">
+
+  <section class="ch" id="s-overview" aria-labelledby="h-overview">
+    <div class="copy lead">
+      <h1 id="h-overview"><span class="l bio">What is happening inside you.</span> <span class="l life">What you do every day.</span> <span class="l">How one changes the other.</span></h1>
+      <p class="lede">HCH is a continuous health operating system. It keeps one living model of your biology and of the life you actually lead, and it measures which changes make you healthier.</p>
+      <ul class="key m" aria-label="Colour key">
+        <li><i class="sw"></i>Biology: labs, imaging, physiology</li>
+        <li><i class="sw life"></i>Life: food, training, sleep, medication</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="ch" id="s-fragments" aria-labelledby="h-fragments">
+    <div class="copy">
+      <h2 id="h-fragments">Today your health lives in pieces.</h2>
+      <p class="lede">Primary care notes, specialist records, lab PDFs, imaging, a watch, a ring, a glucose monitor. Each holds part of you. Nothing turns them into one picture, and even your physicians rarely see the whole.</p>
+      <p class="m tally" data-sc>17 sources, no shared timeline</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-model" aria-labelledby="h-model">
+    <div class="copy">
+      <div class="intro">
+        <h2 id="h-model">HCH gathers them into one model of you.</h2>
+        <p class="lede">Records, biomarkers, imaging, wearables, omics and what your body can actually do are joined into one longitudinal representation. Pick a system to see its state, its trend and what is being changed.</p>
+      </div>
+      <ul class="systems" id="systems" aria-label="Body systems"></ul>
+    </div>
+    <div class="side panel" id="sys-panel" aria-live="polite">
+      <p class="m" id="sys-idx">system 1 of 7</p>
+      <h3 id="sys-name"></h3>
+      <p class="state" id="sys-state"></p>
+      <dl class="rows" id="sys-rows"></dl>
+      <div class="now"><p class="m" data-sc>changing now</p><p id="sys-now"></p></div>
+      <p class="m fine">Sample member. Illustrative values.</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-timeline" aria-labelledby="h-timeline">
+    <div class="copy">
+      <h2 id="h-timeline">A lab result is a snapshot. Your life is a time series.</h2>
+      <p class="lede">Ninety-one days pass between two blood tests. HCH keeps clinical events, biomarkers, nutrition, training, sleep, medication and context on one synchronized timeline, so a change in your biology can be read against what you were actually doing.</p>
+    </div>
+    <div class="side panel">
+      <p class="m" data-sc>an example: what happened in between</p>
+      <ol class="days" id="days"></ol>
+      <p class="verdict" id="verdict">Seen only on day 0 and day 91, nothing explains the change. Seen every day, the candidates can be ranked.</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-loop" aria-labelledby="h-loop">
+    <div class="copy">
+      <h2 id="h-loop">Every change becomes an experiment with one participant.</h2>
+      <p class="m case" data-sc>one illustrative case, followed once around the loop</p>
+      <ol class="stations" id="stations"></ol>
+      <p class="m after">Then the loop runs again. Clinical decisions stay with a licensed clinician.</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-hormesis" aria-labelledby="h-hormesis">
+    <div class="copy">
+      <h2 id="h-hormesis">Stress, in the right dose, makes a cell stronger.</h2>
+      <p class="lede">That is hormesis, and it is where our name comes from. Exercise, heat, cold and metabolic load all work this way: a measured stress, then recovery, then adaptation. Too little changes nothing. Too much does damage.</p>
+      <div class="dose" id="dose">
+        <p class="m" data-sc>stress dose</p>
+        <div class="meter" role="img" aria-label="Stress dose meter"><i class="zone"></i><i class="fill" id="dose-fill"></i></div>
+        <div class="zl m" aria-hidden="true"><span>too little</span><span>adaptive</span><span>too much</span></div>
+        <p class="status" id="dose-state" aria-live="polite">At rest. Press the cell to apply a stress.</p>
+        <div class="dose-row">
+          <button class="btn" id="dose-btn" type="button">Apply stress</button>
+          <p class="m adapt">adaptations <b id="adapt-n">0</b> of 3 <span class="pips" id="pips"><i></i><i></i><i></i></span></p>
+        </div>
+      </div>
+      <p class="lede stance">HCH does not promise to reverse aging. We measure the systems you can change, find risk early, apply evidence-based interventions and check that your physiology improved.</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-record" aria-labelledby="h-record">
+    <div class="copy">
+      <h2 id="h-record">Your record goes where you go.</h2>
+      <p class="lede">A new physician shows a code. You scan it, see exactly what is being asked for and for how long, and approve. The records arrive in seconds, each with proof of where it came from.</p>
+      <p class="m stds">Built on FHIR R4, SMART on FHIR, OAuth2, HL7 v2 and C-CDA. Records stay encrypted off-chain. A ledger holds only hashes, timestamps and consent events.</p>
+    </div>
+    <div class="side card" id="consent" data-state="ask">
+      <div data-show="ask">
+        <p class="m" data-sc>example request</p>
+        <p class="who">Dr. A. Rivera, cardiology</p>
+        <p class="m">asks to read</p>
+        <ul><li>Laboratory history</li><li>Medications</li><li>Imaging</li></ul>
+        <div class="terms m"><span>From January 2023 to present</span><span>Access lasts 24 hours</span></div>
+        <div class="acts"><button class="btn solid" id="approve" type="button">Approve request</button><button class="btn" id="decline" type="button">Decline</button></div>
+      </div>
+      <div data-show="granted" hidden>
+        <p class="m">access granted</p>
+        <p class="who">Shared with Dr. A. Rivera</p>
+        <p class="m"><span id="ttl">23:59:59</span> remaining</p>
+        <div class="prov">
+          <div><b>Potassium 4.2 mmol/L</b><em>verified</em><span>Laboratory result, signed by the lab</span></div>
+          <div><b>Potassium 4.2 mmol/L</b><em class="no">unsigned</em><span>Typed in by the patient</span></div>
+        </div>
+        <p class="m hashline">Each document's hash matches the ledger entry: unchanged since it was recorded.</p>
+        <div class="acts"><button class="btn" id="revoke" type="button">Revoke access</button></div>
+      </div>
+      <div data-show="declined" hidden>
+        <p class="m">request declined</p>
+        <p class="who">Nothing was shared.</p>
+        <div class="acts"><button class="btn" id="again" type="button">Show the request again</button></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ch" id="s-clinicians" aria-labelledby="h-clinicians">
+    <div class="copy">
+      <h2 id="h-clinicians">The visit starts with what actually happened.</h2>
+      <p class="lede">AI organizes, explains, spots trends and tracks adherence. Licensed clinicians make the medical decisions: diagnosis, prescriptions, treatment. Before the appointment, your physician already has the evidence.</p>
+    </div>
+    <div class="side panel">
+      <p class="m" data-sc>protocol adherence, last 8 weeks</p>
+      <p class="big"><span id="adh-all">81</span>%</p>
+      <ul class="bars" id="bars"></ul>
+      <p class="m fine">Each figure opens to the evidence behind it. Sample member.</p>
+    </div>
+  </section>
+
+  <section class="ch" id="s-access" aria-labelledby="h-access">
+    <div class="copy">
+      <h2 id="h-access">The physician changes. The insurer changes. The hospital changes. Your model stays with you.</h2>
+      <ul class="points">
+        <li>The record is built around one human, across a lifetime.</li>
+        <li>The loop closes, from measurement through behavior to measured response.</li>
+        <li>Every intervention leaves response data that makes the next one smarter.</li>
+      </ul>
+      <form class="ask" id="ask" novalidate>
+        <label class="vh" for="email">Email address</label>
+        <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <button class="btn solid" type="submit">Request access</button>
+      </form>
+      <p class="m note" id="ask-note" aria-live="polite"></p>
+      <p class="m legal">Concept preview with sample data. HCH supports clinicians and patients; it does not diagnose or prescribe. Product names belong to their owners and imply no partnership.</p>
+    </div>
+  </section>
+
+</main>
+
+<svg id="callout" aria-hidden="true"><path id="co-path" d=""/><circle id="co-dot" r="4"/></svg>
+<div id="labels" aria-hidden="true"></div>
+
+<footer id="hud">
+  <div class="vitals" title="A simulated heart rate for the model on screen. It is not measuring you.">
+    <canvas id="ecg" width="300" height="68"></canvas>
+    <p class="bpm"><span id="bpm">58</span><small>bpm</small></p>
+    <p class="m cap">model heart rate, simulated</p>
+  </div>
+  <p class="cue m" id="cue" aria-hidden="true">scroll to take the model apart<i></i></p>
+  <div class="read m" aria-hidden="true"><span id="ro-a"></span><span id="ro-b"></span></div>
+</footer>
+<div id="prog" aria-hidden="true"></div>
+
+<div id="cursor" aria-hidden="true"></div>
+<div id="tip" class="m" aria-hidden="true"></div>
+
+<div id="loader" role="status" aria-live="polite">
+  <svg viewBox="0 0 300 40" aria-hidden="true"><path id="ld-path" d="M0 20 H96 l6 -3 6 3 h10 l4 4 6 -22 7 30 5 -12 h12 l8 -6 8 6 H300"/></svg>
+  <p class="m" id="ld-step">Starting</p>
+</div>
+
+<div id="track" aria-hidden="true"></div>
+
+<script>
+(function(){
+"use strict";
+// ---------------------------------------------------------------- math
+const TAU = Math.PI * 2;
+const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
+const lerp = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const damp = (cur, target, rate, dt) => cur + (target - cur) * (1 - Math.exp(-rate * dt));
+
+function rng(seed) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6D2B79F5) | 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function gaussFn(r) {
+  return () => { let u = 0; while (u < 1e-9) u = r(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(TAU * r()); };
+}
+const hash1 = (n) => { const s = Math.sin(n * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+
+const m4 = {
+  create: () => new Float32Array(16),
+  perspective(o, fovy, aspect, n, f) {
+    const t = 1 / Math.tan(fovy / 2);
+    o.fill(0); o[0] = t / aspect; o[5] = t; o[10] = (f + n) / (n - f); o[11] = -1; o[14] = (2 * f * n) / (n - f);
+    return o;
+  },
+  // builds a view matrix and returns the camera basis (right, up, forward) for ray casting
+  lookAt(o, e, c, basis) {
+    let fx = c[0] - e[0], fy = c[1] - e[1], fz = c[2] - e[2];
+    let l = Math.hypot(fx, fy, fz) || 1; fx /= l; fy /= l; fz /= l;
+    let rx = -fz, ry = 0, rz = fx;                 // cross(f, up=(0,1,0)) = (-fz, 0, fx)
+    l = Math.hypot(rx, ry, rz) || 1; rx /= l; rz /= l;
+    const ux = ry * fz - rz * fy, uy = rz * fx - rx * fz, uz = rx * fy - ry * fx; // cross(r, f)
+    o[0] = rx; o[1] = ux; o[2] = -fx; o[3] = 0;
+    o[4] = ry; o[5] = uy; o[6] = -fy; o[7] = 0;
+    o[8] = rz; o[9] = uz; o[10] = -fz; o[11] = 0;
+    o[12] = -(rx * e[0] + ry * e[1] + rz * e[2]);
+    o[13] = -(ux * e[0] + uy * e[1] + uz * e[2]);
+    o[14] = fx * e[0] + fy * e[1] + fz * e[2];
+    o[15] = 1;
+    if (basis) { basis.r = [rx, ry, rz]; basis.u = [ux, uy, uz]; basis.f = [fx, fy, fz]; }
+    return o;
+  },
+  mul(o, a, b) {
+    for (let c = 0; c < 4; c++) {
+      const b0 = b[c * 4], b1 = b[c * 4 + 1], b2 = b[c * 4 + 2], b3 = b[c * 4 + 3];
+      o[c * 4] = a[0] * b0 + a[4] * b1 + a[8] * b2 + a[12] * b3;
+      o[c * 4 + 1] = a[1] * b0 + a[5] * b1 + a[9] * b2 + a[13] * b3;
+      o[c * 4 + 2] = a[2] * b0 + a[6] * b1 + a[10] * b2 + a[14] * b3;
+      o[c * 4 + 3] = a[3] * b0 + a[7] * b1 + a[11] * b2 + a[15] * b3;
+    }
+    return o;
+  },
+};
+
+// ---------------------------------------------------------------- shapes
+// Every shape is a Float32Array of N * 4 floats: world x, y, z and an attribute
+// the shaders read (organ system, lane, component...). Nothing is loaded: all of
+// it is generated here at start-up.
+
+const BODY_S = 1.94, BODY_Y0 = 0.875;          // metres to world units; floor at y = 0 m
+const FLOOR_Y = -BODY_Y0 * BODY_S;
+const bw = (x, y, z) => [x * BODY_S, (y - BODY_Y0) * BODY_S, z * BODY_S];
+
+function sdEll(px, py, pz, cx, cy, cz, rx, ry, rz) {
+  const x = px - cx, y = py - cy, z = pz - cz;
+  const k0 = Math.sqrt((x * x) / (rx * rx) + (y * y) / (ry * ry) + (z * z) / (rz * rz));
+  const a = x / (rx * rx), b = y / (ry * ry), c = z / (rz * rz);
+  const k1 = Math.sqrt(a * a + b * b + c * c);
+  return k1 > 1e-9 ? (k0 * (k0 - 1)) / k1 : -Math.min(rx, ry, rz);
+}
+function sdCone(px, py, pz, ax, ay, az, bx, by, bz, r1, r2) {
+  const pax = px - ax, pay = py - ay, paz = pz - az, bax = bx - ax, bay = by - ay, baz = bz - az;
+  const h = clamp((pax * bax + pay * bay + paz * baz) / (bax * bax + bay * bay + baz * baz), 0, 1);
+  const dx = pax - bax * h, dy = pay - bay * h, dz = paz - baz * h;
+  return Math.sqrt(dx * dx + dy * dy + dz * dz) - (r1 + (r2 - r1) * h);
+}
+const smin = (a, b, k) => { const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; };
+
+// A standing figure in metres, y up from the floor, facing +z.
+function bodySDF(x, y, z) {
+  const ax = Math.abs(x);
+  let d = sdEll(x, y, z, 0, 1.645, 0.012, 0.076, 0.104, 0.093);                       // cranium
+  d = smin(d, sdEll(x, y, z, 0, 1.578, 0.03, 0.058, 0.066, 0.07), 0.03);              // jaw
+  d = smin(d, sdEll(x, y, z, 0, 1.612, 0.098, 0.013, 0.022, 0.016), 0.015);           // nose
+  d = smin(d, sdEll(ax, y, z, 0.078, 1.625, 0.0, 0.011, 0.03, 0.018), 0.01);          // ears
+  d = smin(d, sdCone(x, y, z, 0, 1.44, -0.012, 0, 1.56, 0.0, 0.055, 0.05), 0.03);     // neck
+  d = smin(d, sdCone(ax, y, z, 0.03, 1.468, -0.02, 0.17, 1.425, -0.015, 0.042, 0.05), 0.04); // trapezius
+  d = smin(d, sdEll(x, y, z, 0, 1.3, 0.0, 0.158, 0.17, 0.108), 0.05);                 // chest
+  d = smin(d, sdEll(ax, y, z, 0.195, 1.4, -0.005, 0.062, 0.07, 0.062), 0.04);         // shoulder
+  d = smin(d, sdEll(x, y, z, 0, 1.11, 0.008, 0.137, 0.15, 0.094), 0.06);              // abdomen
+  d = smin(d, sdEll(x, y, z, 0, 0.955, 0.0, 0.158, 0.115, 0.105), 0.06);              // pelvis
+  d = smin(d, sdEll(ax, y, z, 0.08, 0.93, -0.05, 0.08, 0.085, 0.075), 0.04);          // glutes
+  d = smin(d, sdCone(ax, y, z, 0.205, 1.39, -0.005, 0.262, 1.125, -0.012, 0.05, 0.041), 0.035); // upper arm
+  d = smin(d, sdCone(ax, y, z, 0.262, 1.125, -0.012, 0.305, 0.875, 0.03, 0.041, 0.027), 0.02);  // forearm
+  d = smin(d, sdEll(ax, y, z, 0.318, 0.785, 0.045, 0.026, 0.085, 0.04), 0.02);        // hand
+  d = smin(d, sdCone(ax, y, z, 0.092, 0.9, 0.0, 0.1, 0.52, 0.012, 0.086, 0.056), 0.05); // thigh
+  d = smin(d, sdEll(ax, y, z, 0.1, 0.5, 0.02, 0.052, 0.06, 0.055), 0.03);             // knee
+  d = smin(d, sdCone(ax, y, z, 0.1, 0.5, 0.01, 0.105, 0.09, -0.012, 0.05, 0.034), 0.03); // shin
+  d = smin(d, sdEll(ax, y, z, 0.103, 0.36, -0.03, 0.046, 0.11, 0.05), 0.03);          // calf
+  d = smin(d, sdEll(ax, y, z, 0.112, 0.035, 0.055, 0.045, 0.036, 0.115), 0.03);       // foot
+  return d;
+}
+const spineZ = (y) => -0.058 + 0.02 * Math.sin(TAU * (((y - 0.93) / 0.62) * 1.25 + 0.05));
+
+// arc-length sampler over a Catmull-Rom smoothed polyline
+function curve(ctrl, sub) {
+  const pts = [];
+  const n = ctrl.length;
+  for (let i = 0; i < n - 1; i++) {
+    const p0 = ctrl[Math.max(i - 1, 0)], p1 = ctrl[i], p2 = ctrl[i + 1], p3 = ctrl[Math.min(i + 2, n - 1)];
+    for (let s = 0; s < sub; s++) {
+      const t = s / sub, t2 = t * t, t3 = t2 * t, q = [];
+      for (let k = 0; k < 3; k++) {
+        q.push(0.5 * (2 * p1[k] + (-p0[k] + p2[k]) * t + (2 * p0[k] - 5 * p1[k] + 4 * p2[k] - p3[k]) * t2 + (-p0[k] + 3 * p1[k] - 3 * p2[k] + p3[k]) * t3));
+      }
+      pts.push(q);
+    }
+  }
+  pts.push(ctrl[n - 1]);
+  const acc = [0];
+  for (let i = 1; i < pts.length; i++) acc.push(acc[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]));
+  const L = acc[acc.length - 1];
+  return {
+    L,
+    at(t) {
+      const s = clamp(t, 0, 1) * L;
+      let lo = 0, hi = acc.length - 1;
+      while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (acc[mid] <= s) lo = mid; else hi = mid; }
+      const u = acc[hi] > acc[lo] ? (s - acc[lo]) / (acc[hi] - acc[lo]) : 0;
+      const a = pts[lo], b = pts[hi];
+      return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u, a[2] + (b[2] - a[2]) * u];
+    },
+  };
+}
+
+function shuffle4(arr, R) {
+  const n = arr.length / 4;
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(R() * (i + 1)), a = i * 4, b = j * 4;
+    for (let k = 0; k < 4; k++) { const t = arr[a + k]; arr[a + k] = arr[b + k]; arr[b + k] = t; }
+  }
+}
+
+// organ anchors in metres, converted to world units below (camera targets and callouts)
+const SYS_ANCHOR_M = [null, [0, 1.668, 0.0], [0.02, 1.305, 0.03], [0, 1.325, 0.0], [-0.06, 1.175, 0.03], [0, 1.04, 0.04], [0, 1.2, -0.05], [0.02, 1.14, 0.0]];
+const SYS_ANCHOR = SYS_ANCHOR_M.map((p) => (p ? bw(p[0], p[1], p[2]) : null));
+const HEART_W = bw(0.02, 1.305, 0.03), LUNG_W = bw(0.08, 1.315, -0.005);
+
+function buildBody(N, seed) {
+  const R = rng(seed), G = gaussFn(R);
+  const pts = [];
+  const put = (x, y, z, a) => { pts.push(x, y, z, a); };
+  const q = (f) => Math.max(1, Math.round(N * f));
+  const dirU = () => { const x = G(), y = G(), z = G(), l = Math.hypot(x, y, z) || 1; return [x / l, y / l, z / l]; };
+  const side = () => (R() < 0.5 ? -1 : 1);
+  const tube = (count, line, rad, a, mirror, t0, t1) => {
+    for (let i = 0; i < count; i++) {
+      const p = line.at(lerp(t0 || 0, t1 === undefined ? 1 : t1, R())), s = mirror ? side() : 1;
+      put(s * (p[0] + G() * rad), p[1] + G() * rad, p[2] + G() * rad, a);
+    }
+  };
+  const ell = (count, c, r, a, surf, mirror) => {
+    for (let i = 0; i < count; i++) {
+      const d = dirU(), s = R() < surf ? 1 : Math.cbrt(R()), m = mirror ? side() : 1;
+      put(m * (c[0] + d[0] * r[0] * s), c[1] + d[1] * r[1] * s, c[2] + d[2] * r[2] * s, a);
+    }
+  };
+  const seg = (count, a, b, rad, at, mirror) => {
+    for (let i = 0; i < count; i++) {
+      const t = R(), d = dirU(), r = rad * (1 + 1.5 * Math.pow(Math.abs(2 * t - 1), 3)), m = mirror ? side() : 1;
+      put(m * (a[0] + (b[0] - a[0]) * t + d[0] * r), a[1] + (b[1] - a[1]) * t + d[1] * r, a[2] + (b[2] - a[2]) * t + d[2] * r, at);
+    }
+  };
+  const grad = (x, y, z, d) => {
+    const e = 0.003, gx = bodySDF(x + e, y, z) - d, gy = bodySDF(x, y + e, z) - d, gz = bodySDF(x, y, z + e) - d, l = Math.hypot(gx, gy, gz) || 1;
+    return [gx / l, gy / l, gz / l];
+  };
+  const skinPoint = () => {
+    for (;;) {
+      let x = (R() * 2 - 1) * 0.42, y = -0.01 + R() * 1.78, z = -0.2 + R() * 0.42;
+      let d = bodySDF(x, y, z);
+      if (Math.abs(d) > 0.05) continue;
+      let g = null;
+      for (let it = 0; it < 2; it++) { g = grad(x, y, z, d); x -= d * g[0]; y -= d * g[1]; z -= d * g[2]; d = bodySDF(x, y, z); }
+      return [x, y, z, g];
+    }
+  };
+
+  // 1 nervous system: hemispheres, cerebellum, brainstem and cord
+  {
+    const n = q(0.045), nH = Math.round(n * 0.7), nC = Math.round(n * 0.13);
+    for (let i = 0; i < nH; i++) {
+      const d = dirU();
+      if (d[1] < -0.55) { i--; continue; }
+      const fold = 1 + 0.09 * Math.sin(d[0] * 17 + d[1] * 5) * Math.sin(d[1] * 15 + d[2] * 4) * Math.sin(d[2] * 13 + d[0] * 6);
+      const s = (R() < 0.72 ? 1 : Math.cbrt(R())) * fold;
+      let px = 0.064 * d[0] * s;
+      px += px >= 0 ? 0.004 : -0.004;                                   // longitudinal fissure
+      put(px, 1.668 + 0.056 * d[1] * s, 0.006 + 0.079 * d[2] * s, 1);
+    }
+    for (let i = 0; i < nC; i++) {
+      const d = dirU(), s = R() < 0.7 ? 1 : Math.cbrt(R());
+      const y = 1.618 + 0.022 * d[1] * s;
+      put(0.04 * d[0] * s, Math.round(y / 0.0055) * 0.0055, -0.045 + 0.03 * d[2] * s, 1); // folia read as fine lines
+    }
+    const cord = [[0, 1.636, -0.012], [0, 1.585, -0.02]];
+    for (let y = 1.55; y >= 1.04; y -= 0.05) cord.push([0, y, spineZ(y) + 0.004]);
+    tube(n - nH - nC, curve(cord, 4), 0.0035, 1);
+  }
+  // 2 cardiovascular: heart (attr 2.0) and arteries (attr 2.5)
+  {
+    const n = q(0.085), nHeart = Math.round(n * 0.3);
+    for (let i = 0; i < nHeart; i++) {
+      const d = dirU(), s = R() < 0.65 ? 1 : Math.cbrt(R());
+      const taper = 0.62 + 0.38 * (d[1] * 0.5 + 0.5);
+      const lx = 0.047 * d[0] * s * taper, ly = 0.06 * d[1] * s, lz = 0.041 * d[2] * s * taper;
+      const c = Math.cos(0.5), sn = Math.sin(0.5);
+      put(0.02 + lx * c - ly * sn, 1.305 + lx * sn + ly * c, 0.03 + lz, 2.0);
+    }
+    const aorta = curve([[0.012, 1.345, 0.02], [0.016, 1.4, 0.0], [0.012, 1.375, -0.042], [0.01, 1.2, -0.04], [0.006, 1.03, -0.03]], 8);
+    const legA = curve([[0.006, 1.03, -0.03], [0.07, 0.95, -0.01], [0.094, 0.74, 0.0], [0.1, 0.5, -0.02], [0.103, 0.3, -0.02], [0.105, 0.08, -0.005]], 8);
+    const neckA = curve([[0.012, 1.4, 0.0], [0.03, 1.47, 0.008], [0.042, 1.56, 0.012], [0.05, 1.63, 0.03], [0.045, 1.7, 0.02]], 8);
+    const armA = curve([[0.014, 1.4, 0.0], [0.1, 1.428, -0.008], [0.198, 1.39, -0.006], [0.262, 1.125, -0.012], [0.303, 0.88, 0.028], [0.318, 0.78, 0.045]], 8);
+    const nV = n - nHeart;
+    tube(Math.round(nV * 0.2), aorta, 0.006, 2.5);
+    tube(Math.round(nV * 0.36), legA, 0.0036, 2.5, true);
+    tube(Math.round(nV * 0.14), neckA, 0.003, 2.5, true);
+    tube(nV - Math.round(nV * 0.2) - Math.round(nV * 0.36) - Math.round(nV * 0.14), armA, 0.0032, 2.5, true);
+  }
+  // 3 lungs and airways
+  {
+    const n = q(0.08), nAir = Math.round(n * 0.2);
+    let made = 0;
+    while (made < n - nAir) {
+      const right = R() < 0.52, d = dirU(), s = R() < 0.5 ? 1 : Math.cbrt(R());
+      const c = right ? [-0.08, 1.315, -0.005] : [0.08, 1.315, -0.005], r = right ? [0.056, 0.115, 0.07] : [0.052, 0.11, 0.068];
+      const x = c[0] + d[0] * r[0] * s, y = c[1] + d[1] * r[1] * s, z = c[2] + d[2] * r[2] * s;
+      if (Math.abs(x) < 0.024) continue;                                 // mediastinum
+      if (y < 1.222 + 0.03 * Math.cos((Math.abs(x) - 0.08) * 30)) continue; // diaphragm dome
+      const hx = (x - 0.02) / 0.062, hy = (y - 1.305) / 0.074, hz = (z - 0.03) / 0.056;
+      if (hx * hx + hy * hy + hz * hz < 1) continue;                     // cardiac notch
+      put(x, y, z, 3); made++;
+    }
+    const trachea = curve([[0, 1.5, 0.004], [0, 1.44, 0.0], [0, 1.395, -0.006]], 4);
+    tube(Math.round(nAir * 0.22), trachea, 0.006, 3);
+    const nB = nAir - Math.round(nAir * 0.22), branches = [];
+    for (let b = 0; b < 14; b++) {
+      const sx = b % 2 ? 1 : -1, d = dirU();
+      branches.push(curve([[0, 1.395, -0.006], [sx * 0.045, 1.365, -0.006], [sx * (0.08 + d[0] * 0.03), 1.315 + d[1] * 0.085, -0.005 + d[2] * 0.05]], 6));
+    }
+    for (let i = 0; i < nB; i++) { const p = branches[Math.floor(R() * branches.length)].at(R()); put(p[0] + G() * 0.0022, p[1] + G() * 0.0022, p[2] + G() * 0.0022, 3); }
+  }
+  // 4 liver
+  {
+    const n = q(0.035);
+    for (let i = 0; i < n; i++) {
+      const d = dirU(), s = R() < 0.6 ? 1 : Math.cbrt(R());
+      const x = -0.05 + d[0] * 0.1 * s;
+      const ry = 0.056 * lerp(1.0, 0.36, sstep(-0.07, 0.06, x));         // wedge thinning toward the left lobe
+      put(x, 1.178 + d[1] * ry * s + 0.012 * sstep(-0.1, 0.05, x), 0.022 + d[2] * 0.068 * s, 4);
+    }
+  }
+  // 5 gastrointestinal
+  {
+    const n = q(0.07);
+    const eso = curve([[0, 1.5, -0.02], [0.004, 1.38, -0.035], [0.012, 1.26, -0.02], [0.04, 1.215, 0.0]], 6);
+    const nE = Math.round(n * 0.05), nS = Math.round(n * 0.17), nSm = Math.round(n * 0.44);
+    tube(nE, eso, 0.0035, 5);
+    for (let i = 0; i < nS; i++) {                                       // stomach
+      const d = dirU(), lx = 0.04 * d[0], ly = 0.055 * d[1], c = Math.cos(-0.55), sn = Math.sin(-0.55);
+      put(0.058 + lx * c - ly * sn, 1.172 + lx * sn + ly * c, 0.026 + 0.036 * d[2], 5);
+    }
+    for (let i = 0; i < nSm; i++) {                                      // small intestine: one long tangled tube
+      const t = R() * TAU, d = dirU(), r = 0.0105;
+      put(0.074 * Math.sin(4 * t) * Math.cos(0.5 * t + 0.3) + d[0] * r, 1.033 + 0.05 * Math.sin(7 * t + 0.6) + d[1] * r, 0.03 + 0.026 * Math.sin(5 * t + 1.1) + d[2] * r, 5);
+    }
+    const colon = curve([[-0.092, 0.955, 0.03], [-0.108, 1.0, 0.032], [-0.108, 1.08, 0.032], [-0.092, 1.112, 0.036], [0.0, 1.094, 0.05], [0.094, 1.118, 0.03], [0.108, 1.08, 0.028], [0.106, 0.99, 0.03], [0.07, 0.945, 0.022], [0.012, 0.935, 0.0], [0.0, 0.89, -0.03]], 8);
+    for (let i = 0; i < n - nE - nS - nSm; i++) {
+      const t = R(), p = colon.at(t), d = dirU(), r = 0.0185 * (1 + 0.28 * Math.sin(t * colon.L * 210));
+      put(p[0] + d[0] * r, p[1] + d[1] * r, p[2] + d[2] * r, 5);
+    }
+  }
+  // 6 musculoskeletal: spine, ribs, girdles, long bones
+  {
+    const n = q(0.115);
+    let left = n;
+    const take = (f) => { const c = Math.min(left, Math.round(n * f)); left -= c; return c; };
+    for (let i = take(0.17); i > 0; i--) {                               // 24 vertebrae
+      const k = Math.floor(R() * 24), y = 0.945 + ((k + 0.5) / 24) * 0.6, big = lerp(0.021, 0.011, k / 23), d = dirU();
+      if (R() < 0.74) put(d[0] * big, y + d[1] * 0.0082, spineZ(y) + d[2] * big * 0.8, 6);
+      else { const t = R(); put(G() * 0.0025, y - t * 0.012, spineZ(y) - big * 0.8 - t * 0.022, 6); }
+    }
+    for (let i = take(0.035); i > 0; i--) { const t = R(); put(G() * 0.022 * (1 - t * 0.7), 0.945 - t * 0.085, spineZ(0.945) - 0.006 - t * 0.012 + G() * 0.006, 6); } // sacrum
+    for (let i = take(0.2); i > 0; i--) {                                // ribs
+      const j = Math.floor(R() * 10), s = side(), y0 = 1.425 - j * 0.0255;
+      const rx = 0.08 + 0.056 * Math.sin((Math.PI * (j + 1.6)) / 12.5), rz = 0.052 + 0.03 * Math.sin((Math.PI * (j + 2)) / 12);
+      const a = R() * Math.PI * (j < 7 ? 0.9 : j < 9 ? 0.72 : 0.55);
+      put(s * (0.012 + rx * Math.sin(a)) + G() * 0.0016, y0 - 0.025 * (1 - Math.cos(a)) * (1 + j * 0.08) + G() * 0.0016, spineZ(y0) + 0.01 + rz * (1 - Math.cos(a)) + G() * 0.0016, 6);
+    }
+    for (let i = take(0.02); i > 0; i--) { const t = R(); put(G() * 0.007, 1.41 - t * 0.145, 0.07 + t * 0.025 + G() * 0.002, 6); }   // sternum
+    seg(take(0.03), [0.015, 1.43, 0.062], [0.175, 1.44, 0.0], 0.005, 6, true);                                                 // clavicle
+    for (let i = take(0.035); i > 0; i--) {                              // scapula
+      let u = R(), v = R(); if (u + v > 1) { u = 1 - u; v = 1 - v; }
+      const A = [0.07, 1.42, -0.066], B = [0.17, 1.43, -0.05], C = [0.1, 1.285, -0.072];
+      put(side() * (A[0] + (B[0] - A[0]) * u + (C[0] - A[0]) * v), A[1] + (B[1] - A[1]) * u + (C[1] - A[1]) * v, A[2] + (B[2] - A[2]) * u + (C[2] - A[2]) * v, 6);
+    }
+    const crest = curve([[0.03, 0.975, -0.062], [0.1, 1.012, -0.045], [0.143, 1.0, 0.0], [0.124, 0.955, 0.052]], 8);
+    for (let i = take(0.06); i > 0; i--) {                               // iliac blades
+      const p = crest.at(R()), t = Math.pow(R(), 1.6), s = side();
+      put(s * lerp(p[0], 0.09, t), lerp(p[1], 0.922, t), lerp(p[2], 0.0, t), 6);
+    }
+    tube(take(0.03), curve([[0.092, 0.905, 0.03], [0.05, 0.89, 0.058], [0.008, 0.885, 0.064]], 6), 0.004, 6, true);            // pubis
+    tube(take(0.02), curve([[0.09, 0.9, 0.0], [0.062, 0.852, -0.02], [0.028, 0.872, 0.04]], 6), 0.004, 6, true);               // ischium
+    seg(take(0.045), [0.2, 1.395, -0.005], [0.26, 1.135, -0.012], 0.0085, 6, true);                                            // humerus
+    seg(take(0.025), [0.264, 1.12, -0.006], [0.311, 0.885, 0.036], 0.0055, 6, true);                                           // radius
+    seg(take(0.025), [0.257, 1.122, -0.019], [0.299, 0.885, 0.022], 0.0055, 6, true);                                          // ulna
+    for (let i = take(0.03); i > 0; i--) {                               // hand
+      const f = Math.floor(R() * 5), t = R(), s = side();
+      put(s * (0.305 + (0.012 + f * 0.001) * t), 0.868 - t * (0.13 + 0.03 * Math.sin((f / 4) * Math.PI)), 0.022 + f * 0.011 + t * 0.006, 6);
+    }
+    seg(take(0.012), [0.085, 0.935, 0.0], [0.127, 0.9, 0.0], 0.008, 6, true);                                                  // femoral neck
+    seg(take(0.06), [0.127, 0.9, 0.0], [0.1, 0.515, 0.012], 0.0115, 6, true);                                                  // femur
+    ell(take(0.012), [0.1, 0.5, 0.058], [0.018, 0.02, 0.008], 6, 1, true);                                                     // patella
+    seg(take(0.045), [0.097, 0.49, 0.012], [0.102, 0.095, -0.008], 0.0095, 6, true);                                            // tibia
+    seg(take(0.02), [0.124, 0.48, -0.006], [0.123, 0.09, -0.02], 0.0045, 6, true);                                             // fibula
+    for (let i = take(0.03); i > 0; i--) {                               // foot
+      const f = Math.floor(R() * 5), t = R(), s = side();
+      put(s * (0.105 + (f - 2) * 0.012 * t + (f - 2) * 0.003), 0.06 - t * 0.04, -0.02 + t * (0.165 - Math.abs(f - 1.4) * 0.012), 6);
+    }
+    ell(take(0.012), [0.105, 0.036, -0.045], [0.02, 0.022, 0.03], 6, 1, true);                                                 // heel
+    tube(take(0.02), curve([[0.064, 1.6, 0.0], [0.058, 1.555, 0.04], [0.03, 1.532, 0.072], [0.0, 1.527, 0.08]], 6), 0.003, 6, true); // jaw line
+    ell(left, [0, 1.645, 0.012], [0.071, 0.098, 0.087], 6, 1);                                                                 // cranium
+  }
+  // 7 metabolic: pancreas, thyroid, kidneys and adrenals, working muscle
+  {
+    const n = q(0.04), nP = Math.round(n * 0.22), nT = Math.round(n * 0.1), nK = Math.round(n * 0.28);
+    const panc = curve([[-0.04, 1.128, 0.0], [0.0, 1.14, -0.004], [0.04, 1.146, -0.008], [0.078, 1.158, -0.012]], 6);
+    for (let i = 0; i < nP; i++) { const t = R(), p = panc.at(t), d = dirU(), r = lerp(0.017, 0.008, t) * (R() < 0.6 ? 1 : Math.cbrt(R())); put(p[0] + d[0] * r, p[1] + d[1] * r, p[2] + d[2] * r, 7); }
+    ell(nT, [0.017, 1.475, 0.032], [0.01, 0.021, 0.008], 7, 0.8, true);
+    for (let i = 0; i < nK; i++) {
+      const s = side(), d = dirU();
+      if (R() < 0.82) put(s * (0.066 + d[0] * 0.026), 1.135 + d[1] * 0.048, -0.05 + d[2] * 0.02, 7);
+      else put(s * (0.058 + d[0] * 0.014), 1.192 + d[1] * 0.008, -0.048 + d[2] * 0.012, 7);
+    }
+    const limbs = [[[0.094, 0.84, 0.0], [0.1, 0.56, 0.012], 0.06], [[0.103, 0.42, -0.02], [0.104, 0.2, -0.014], 0.036], [[0.215, 1.34, -0.006], [0.255, 1.16, -0.012], 0.034], [[0.08, 0.95, -0.05], [0.08, 0.91, -0.05], 0.06]];
+    for (let i = 0; i < n - nP - nT - nK; i++) {
+      const L = limbs[Math.floor(R() * limbs.length)], t = R(), d = dirU(), r = L[2] * Math.cbrt(R()) * 0.85, s = side();
+      put(s * (lerp(L[0][0], L[1][0], t) + d[0] * r), lerp(L[0][1], L[1][1], t) + d[1] * r, lerp(L[0][2], L[1][2], t) + d[2] * r, 7);
+    }
+  }
+  // 8 the life around the biology: a loose warm halo
+  {
+    const n = q(0.03);
+    for (let i = 0; i < n; i++) { const p = skinPoint(), o = 0.05 + 0.34 * R() * R(); put(p[0] + p[3][0] * o, p[1] + p[3][1] * o, p[2] + p[3][2] * o, 8); }
+  }
+  // 0 skin takes whatever is left
+  const rest = N - pts.length / 4;
+  for (let i = 0; i < rest; i++) { const p = skinPoint(); put(p[0], p[1], p[2], 0); }
+
+  const out = new Float32Array(N * 4);
+  for (let i = 0; i < N; i++) {
+    out[i * 4] = pts[i * 4] * BODY_S; out[i * 4 + 1] = (pts[i * 4 + 1] - BODY_Y0) * BODY_S; out[i * 4 + 2] = pts[i * 4 + 2] * BODY_S; out[i * 4 + 3] = pts[i * 4 + 3];
+  }
+  shuffle4(out, R);
+  return out;
+}
+
+// ---- fragments: seventeen places a person's health data lives today
+const GLYPH = {
+  sheet(R) {
+    const w = 0.5, h = 0.66;
+    if (R() < 0.3) {
+      const p = R() * 2 * (w + h);
+      if (p < w) return [p - w / 2, h / 2, 0];
+      if (p < w + h) return [w / 2, h / 2 - (p - w), 0];
+      if (p < 2 * w + h) return [w / 2 - (p - w - h), -h / 2, 0];
+      return [-w / 2, -h / 2 + (p - 2 * w - h), 0];
+    }
+    const line = Math.floor(R() * 8), len = [0.8, 1, 0.6, 0.9, 1, 0.45, 0.85, 0.7][line];
+    return [-w / 2 + 0.06 + R() * (w - 0.12) * len, h / 2 - 0.09 - line * 0.07, 0];
+  },
+  stack(R) { const k = Math.floor(R() * 3), p = GLYPH.sheet(R); return [p[0] + k * 0.07 - 0.07, p[1] - k * 0.05 + 0.05, k * 0.12 - 0.12]; },
+  table(R) {
+    const w = 0.52, h = 0.62, t = R();
+    if (t < 0.5) { const r = Math.floor(R() * 8); return [(R() - 0.5) * w, h / 2 - (r / 7) * h, 0]; }
+    const c = Math.floor(R() * 4); return [-w / 2 + (c / 3) * w, (R() - 0.5) * h, 0];
+  },
+  helix(R) {
+    const t = R(), a = t * TAU * 2.2, s = R() < 0.5 ? 0 : Math.PI;
+    if (R() < 0.3) { const k = Math.floor(t * 14) / 14, b = k * TAU * 2.2, u = R() * 2 - 1; return [0.15 * Math.cos(b) * u, (k - 0.5) * 0.84, 0.15 * Math.sin(b) * u]; }
+    return [0.15 * Math.cos(a + s), (t - 0.5) * 0.84, 0.15 * Math.sin(a + s)];
+  },
+  rods(R, G, k) {
+    const j = Math.floor(R() * 9), c = [hash1(k * 9 + j) - 0.5, hash1(k * 7 + j * 3 + 1) - 0.5, hash1(k * 5 + j * 5 + 2) - 0.5], a = hash1(j + k * 13) * TAU, u = (R() - 0.5) * 0.2;
+    return [c[0] * 0.62 + Math.cos(a) * u + G() * 0.016, c[1] * 0.62 + Math.sin(a) * u + G() * 0.016, c[2] * 0.4 + G() * 0.016];
+  },
+  slices(R) {
+    const k = Math.floor(R() * 4), z = (k - 1.5) * 0.14, t = R();
+    if (t < 0.45) { const p = R() * 4, s = 0.25, e = p % 1, q = Math.floor(p); return [[-s + 2 * s * e, s, s - 2 * s * e, -s][q], [s, s - 2 * s * e, -s, -s + 2 * s * e][q], z]; }
+    const a = R() * TAU, r = t < 0.8 ? 0.17 : 0.07; return [Math.cos(a) * r, Math.sin(a) * r * 1.15, z];
+  },
+  pills(R, G, k) {
+    const j = Math.floor(R() * 3), a = hash1(k + j * 2.1) * Math.PI, c = [(j - 1) * 0.2, (hash1(k * 3 + j) - 0.5) * 0.3], u = (R() * 2 - 1) * 0.15, hl = 0.09, r = 0.06;
+    const rr = Math.abs(u) <= hl ? r : Math.sqrt(Math.max(r * r - (Math.abs(u) - hl) * (Math.abs(u) - hl), 0)), ph = R() * TAU;
+    const lx = u, ly = Math.cos(ph) * rr, lz = Math.sin(ph) * rr;
+    return [c[0] + lx * Math.cos(a) - ly * Math.sin(a), c[1] + lx * Math.sin(a) + ly * Math.cos(a), lz];
+  },
+  watch(R) {
+    const t = R();
+    if (t < 0.55) { const a = R() * TAU, n = 5, c = Math.cos(a), s = Math.sin(a), r = 0.2 / Math.pow(Math.pow(Math.abs(c), n) + Math.pow(Math.abs(s), n), 1 / n); return [c * r, s * r * 1.15, 0]; }
+    const up = R() < 0.5 ? 1 : -1, u = R(); return [(R() - 0.5) * 0.24 * (1 - u * 0.35), up * (0.24 + u * 0.2), -u * 0.1];
+  },
+  ring(R, G) { const a = R() * TAU, b = R() * TAU, r = 0.045; return [(0.24 + r * Math.cos(b)) * Math.cos(a), (0.24 + r * Math.cos(b)) * Math.sin(a), r * 1.6 * Math.sin(b)]; },
+  band(R) { const a = R() * TAU; return [0.3 * Math.cos(a), 0.2 * Math.sin(a), (R() - 0.5) * 0.2]; },
+  cgm(R, G) {
+    if (R() < 0.4) { const a = R() * TAU, r = 0.11 * Math.sqrt(R()); return [-0.2 + Math.cos(a) * r, 0.16 + Math.sin(a) * r, 0]; }
+    const u = R(); return [-0.36 + u * 0.72, -0.14 + 0.09 * Math.sin(u * 9) + 0.05 * Math.sin(u * 23 + 1), 0];
+  },
+  hypno(R) { const u = R(), st = [0.2, 0.05, -0.1, -0.2, -0.1, 0.12, -0.02, -0.18, 0.0, 0.2][Math.floor(u * 10)]; return [-0.36 + u * 0.72, st + (R() < 0.12 ? (R() - 0.5) * 0.3 : 0), 0]; },
+  peaks(R) { const u = R(), ph = (u * 5) % 1, y = ph < 0.3 ? 0 : ph < 0.4 ? (ph - 0.3) * 4 : ph < 0.5 ? 0.4 - (ph - 0.4) * 6.5 : ph < 0.56 ? -0.25 + (ph - 0.5) * 4.2 : 0; return [-0.38 + u * 0.76, y - 0.04, 0]; },
+  plate(R) {
+    const t = R();
+    if (t < 0.5) { const a = R() * TAU; return [0.3 * Math.cos(a), 0.3 * Math.sin(a), 0]; }
+    if (t < 0.7) { const a = R() * TAU; return [0.2 * Math.cos(a), 0.2 * Math.sin(a), 0]; }
+    const a = [0.5, 2.6, 4.4][Math.floor(R() * 3)], r = R() * 0.2; return [r * Math.cos(a), r * Math.sin(a), 0];
+  },
+};
+// label, glyph, warm (1 = something you do or wear, 0 = something a clinic holds), short label for narrow screens
+const FRAGMENTS = [
+  ['Primary care records', 'sheet', 0, 'Primary care'], ['Apple Watch', 'watch', 1], ['Lab PDFs', 'table', 0], ['Sleep data', 'hypno', 1],
+  ['Imaging', 'slices', 0], ['Oura', 'ring', 1], ['Specialist records', 'sheet', 0, 'Specialists'], ['Nutrition', 'plate', 1],
+  ['Genetic testing', 'helix', 0, 'Genetics'], ['Whoop', 'band', 1], ['Medications', 'pills', 0], ['Exercise data', 'peaks', 1, 'Exercise'],
+  ['Hospital records', 'stack', 0, 'Hospital'], ['CGM', 'cgm', 1], ['Microbiome testing', 'rods', 0, 'Microbiome'], ['Supplements', 'pills', 1],
+  ['Physical therapy records', 'sheet', 0, 'Physical therapy'],
+];
+const FRAG_TALL_HW = 2.35;
+function fragmentCentres(aspect) {
+  const K = FRAGMENTS.length, out = [];
+  if (aspect < 0.85) {
+    // tall screens: three columns in the upper part of the screen, words below
+    const halfW = FRAG_TALL_HW / 0.9, halfH = halfW / aspect;
+    for (let k = 0; k < K; k++) {
+      const row = Math.floor(k / 3), col = k % 3, x = (row === 5 ? col - 0.5 : col - 1) * halfW * 0.62, y = halfH * (1 - 2 * (0.115 + row * 0.092));
+      out.push([x + Math.sin(k * 2.1) * 0.1, y + Math.cos(k * 1.7) * 0.08, Math.sin(k * 1.9) * 0.5, Math.atan2(y - halfH * 0.3, x)]);
+    }
+    return out;
+  }
+  // wide screens: spaced evenly along an ellipse by arc length, so the sides are no more crowded than the top
+  const rx = clamp(2.5 * aspect, 2.6, 4.4), ry = 2.15, M = 720, acc = [0];
+  for (let i = 1; i <= M; i++) {
+    const a0 = (TAU * (i - 1)) / M, a1 = (TAU * i) / M;
+    acc.push(acc[i - 1] + Math.hypot(rx * (Math.cos(a1) - Math.cos(a0)), ry * (Math.sin(a1) - Math.sin(a0))));
+  }
+  for (let k = 0, j = 0; k < K; k++) {
+    const target = ((k + 0.35) / K) * acc[M];
+    while (j < M && acc[j + 1] < target) j++;
+    const a = (TAU * (j + (target - acc[j]) / (acc[j + 1] - acc[j]))) / M, rr = 1 + (k % 2 ? 0.07 : -0.06);
+    out.push([Math.cos(a) * rx * rr, Math.sin(a) * ry * rr, Math.sin(k * 1.9) * 0.7, a]);
+  }
+  return out;
+}
+function buildFragments(N, seed, body, aspect) {
+  const R = rng(seed), G = gaussFn(R), K = FRAGMENTS.length, cen = fragmentCentres(aspect), out = new Float32Array(N * 4);
+  // pieces of the body fly to the cluster that lies in their direction
+  const ang = new Float32Array(N), idx = new Uint32Array(N);
+  for (let i = 0; i < N; i++) { idx[i] = i; ang[i] = Math.atan2(body[i * 4 + 1] / 1.7 + G() * 0.22, body[i * 4] / 0.55 + G() * 0.22); }
+  const order = Array.from(idx).sort((a, b) => ang[a] - ang[b]);
+  const cl = cen.map((c, k) => ({ k, a: Math.atan2(Math.sin(c[3]), Math.cos(c[3])) })).sort((p, q) => p.a - q.a);
+  const scale = aspect >= 0.85 ? 0.92 : 0.78;
+  for (let g = 0; g < N; g++) {
+    const i = order[g], k = cl[Math.min(K - 1, Math.floor((g / N) * K))].k, c = cen[k], f = FRAGMENTS[k];
+    const p = GLYPH[f[1]](R, G, k), ry = (hash1(k * 3.3) - 0.5) * 0.9, rxa = (hash1(k * 5.1) - 0.5) * 0.5;
+    let x = p[0] * scale + G() * 0.006, y = p[1] * scale + G() * 0.006, z = p[2] * scale + G() * 0.006;
+    const x1 = x * Math.cos(ry) + z * Math.sin(ry), z1 = -x * Math.sin(ry) + z * Math.cos(ry);
+    const y2 = y * Math.cos(rxa) - z1 * Math.sin(rxa), z2 = y * Math.sin(rxa) + z1 * Math.cos(rxa);
+    out[i * 4] = c[0] + x1; out[i * 4 + 1] = c[1] + y2; out[i * 4 + 2] = c[2] + z2; out[i * 4 + 3] = k + (f[2] ? 0.5 : 0);
+  }
+  return out;
+}
+
+// ---- timeline: ninety-one days between two blood tests, on eight synchronized tracks
+const TL = { half: 3.3, lanes: ['Clinical', 'Biomarkers', 'Nutrition', 'Exercise', 'Sleep', 'Medication', 'Alcohol', 'Context'] };
+const tlX = (day) => -TL.half + (day / 91) * TL.half * 2;
+const tlY = (lane) => 1.4 - lane * 0.4;
+function buildTimeline(N, seed) {
+  const R = rng(seed), G = gaussFn(R), out = new Float32Array(N * 4);
+  const share = [0.055, 0.075, 0.16, 0.14, 0.15, 0.09, 0.06, 0.07, 0.11, 0.09];
+  const dayW = (TL.half * 2) / 91;
+  let i = 0;
+  const put = (x, y, a) => { if (i >= N) return; out[i * 4] = x; out[i * 4 + 1] = y; out[i * 4 + 2] = G() * 0.014; out[i * 4 + 3] = a; i++; };
+  for (let l = 0; l < 10; l++) {
+    const cnt = l === 9 ? N - i : Math.round(N * share[l]), y0 = tlY(Math.min(l, 7));
+    for (let c = 0; c < cnt; c++) {
+      if (l === 0) {                                   // visits: diamonds on day 0, 47 and 91
+        const d = [0, 47, 91][Math.floor(R() * 3)], t = R() * 4, k = Math.floor(t), e = t - k, C = [[0, 1], [1, 0], [0, -1], [-1, 0]], a = C[k], b = C[(k + 1) % 4], s = 0.105 * (R() < 0.3 ? 0.55 : 1);
+        put(tlX(d) + lerp(a[0], b[0], e) * s, y0 + lerp(a[1], b[1], e) * s, 0);
+      } else if (l === 1) {                            // two lab draws: snapshots
+        const late = R() < 0.5, j = Math.floor(R() * 6), base = [0.12, 0.04, -0.03, -0.1, 0.08, -0.06][j], moved = [-0.09, 0.0, 0.02, 0.05, -0.03, 0.0][j];
+        put(tlX(late ? 91 : 0) + (j - 2.5) * 0.045 + G() * 0.011, y0 + base + (late ? moved : 0) + G() * 0.011, 1);
+      } else if (l === 2) {                            // three meals a day; the pattern changes on day 11
+        const d = Math.floor(R() * 92), m = Math.floor(R() * 3), h = d < 11 ? 0.2 + 0.07 * hash1(d * 3 + m) : 0.1 + 0.03 * hash1(d * 3 + m);
+        put(tlX(Math.min(d + [0.22, 0.5, 0.78][m], 91)), y0 - 0.14 + R() * h, 2);
+      } else if (l === 3) {                            // training days; load goes up on day 31, stops while ill
+        let d; do { d = Math.floor(R() * 92); } while ([2, 5].includes(d % 7) || (d >= 59 && d <= 63));
+        const h = (d < 31 ? 0.13 : 0.22) * (0.75 + 0.4 * hash1(d));
+        put(tlX(Math.min(d + 0.25 + R() * 0.5, 91)), y0 - 0.14 + R() * h, 3);
+      } else if (l === 4) {                            // sleep: steady, then worse from day 24
+        const d = R() * 91, amp = d < 24 ? 0.01 : d < 44 ? 0.06 : d > 58 && d < 65 ? 0.05 : 0.016;
+        put(tlX(d), y0 + 0.05 * Math.sin((TAU * d) / 7) + 0.03 * Math.sin(d * 0.31) + G() * amp - (d >= 24 && d < 44 ? 0.04 : 0), 4);
+      } else if (l === 5) {                            // creatine from day 0, a medication from day 47
+        const second = R() < 0.34, d = second ? 47 + Math.floor(R() * 45) : Math.floor(R() * 92);
+        put(tlX(Math.min(d + 0.5, 91)) + G() * 0.009, y0 + (second ? -0.075 : 0.075) + G() * 0.009, 5);
+      } else if (l === 6) {                            // alcohol on weekends until day 70
+        let d; do { d = Math.floor(R() * 70); } while (![4, 5].includes(d % 7));
+        const k = Math.floor(R() * (2 + Math.floor(hash1(d) * 2)));
+        put(tlX(d + 0.5) + G() * 0.011, y0 - 0.1 + k * 0.075 + G() * 0.011, 6);
+      } else if (l === 7) {                            // context: travel days 18 to 21, illness days 59 to 64
+        if (R() < 0.62) { const d = 59 + R() * 5.5; put(tlX(d), y0 - 0.13 + ((d * 2.2) % 1) * 0.26, 7); }
+        else { const p = R() * 2 * (3.5 * dayW + 0.26), w = 3.5 * dayW, h = 0.26, x0 = tlX(18); if (p < w) put(x0 + p, y0 + h / 2, 7); else if (p < w + h) put(x0 + w, y0 + h / 2 - (p - w), 7); else if (p < 2 * w + h) put(x0 + w - (p - w - h), y0 - h / 2, 7); else put(x0, y0 - h / 2 + (p - 2 * w - h), 7); }
+      } else if (l === 8) {                            // faint lane rules
+        put(tlX(R() * 91), tlY(Math.floor(R() * 8)) - 0.18, 8);
+      } else {                                         // day axis with weekly ticks
+        const yb = tlY(7) - 0.4;
+        if (R() < 0.45) put(tlX(R() * 91), yb, 9);
+        else { const w = Math.floor(R() * 14), d = w * 7; put(tlX(d), yb + R() * (d === 0 || d === 91 ? 0.16 : 0.07), 9); }
+      }
+    }
+  }
+  shuffle4(out, R);
+  return out;
+}
+
+// ---- loop: a ring that particles stream around, with six stations
+const LOOP = { R: 1.55, tilt: -1.02 };
+const stationAngle = (k) => Math.PI / 2 - (k * TAU) / 6;
+function buildLoop(N, seed) {
+  const R = rng(seed), G = gaussFn(R), out = new Float32Array(N * 4);
+  for (let i = 0; i < N; i++) {
+    const o = i * 4;
+    if (R() < 0.76) {                                  // stream: (angle, strand phase, spread); placed by the shader
+      out[o] = R() * TAU; out[o + 1] = (Math.floor(R() * 3) * TAU) / 3 + G() * 0.22; out[o + 2] = G(); out[o + 3] = 0;
+    } else {
+      const k = Math.floor(R() * 6), a = stationAngle(k), cx = Math.cos(a) * LOOP.R, cy = Math.sin(a) * LOOP.R;
+      if (R() < 0.55) { const x = G(), y = G(), z = G(), l = Math.hypot(x, y, z) || 1; out[o] = cx + (x / l) * 0.13; out[o + 1] = cy + (y / l) * 0.13; out[o + 2] = (z / l) * 0.13; }
+      else { const p = R() * TAU, r = 0.27 + G() * 0.004; out[o] = cx + Math.cos(a) * Math.cos(p) * r; out[o + 1] = cy + Math.sin(a) * Math.cos(p) * r; out[o + 2] = Math.sin(p) * r; }
+      out[o + 3] = 1 + k;
+    }
+  }
+  return out;
+}
+
+// ---- cell: membrane, nucleus, mitochondria that multiply with adaptation
+const CELL = { R: 1.3, nucleus: [-0.22, 0.12, 0.0] };
+function buildCell(N, seed) {
+  const R = rng(seed), G = gaussFn(R), out = new Float32Array(N * 4);
+  const dirU = () => { const x = G(), y = G(), z = G(), l = Math.hypot(x, y, z) || 1; return [x / l, y / l, z / l]; };
+  const mito = [];
+  let guard = 0;
+  while (mito.length < 16 && guard++ < 4000) {
+    const d = dirU(), r = 0.45 + 0.52 * Math.cbrt(R()), c = [d[0] * r, d[1] * r, d[2] * r * 0.9];
+    if (Math.hypot(c[0] - CELL.nucleus[0], c[1] - CELL.nucleus[1], c[2] - CELL.nucleus[2]) < 0.66) continue;
+    if (Math.hypot(c[0], c[1], c[2]) > 0.98) continue;
+    if (mito.some((m) => Math.hypot(m.c[0] - c[0], m.c[1] - c[1], m.c[2] - c[2]) < 0.37)) continue;
+    const ax = dirU(); let ux = [ax[1], -ax[0], 0]; const ul = Math.hypot(ux[0], ux[1]) || 1; ux = [ux[0] / ul, ux[1] / ul, 0];
+    const vx = [ax[1] * ux[2] - ax[2] * ux[1], ax[2] * ux[0] - ax[0] * ux[2], ax[0] * ux[1] - ax[1] * ux[0]];
+    mito.push({ c, ax, ux, vx, lvl: mito.length < 5 ? 0 : mito.length < 9 ? 1 : mito.length < 13 ? 2 : 3 });
+  }
+  for (let i = 0; i < N; i++) {
+    const o = i * 4, t = R();
+    let p, a;
+    if (t < 0.36) {                                    // membrane: two leaflets
+      const d = dirU(), r = CELL.R - (R() < 0.5 ? 0 : 0.045); p = [d[0] * r, d[1] * r, d[2] * r]; a = 1;
+    } else if (t < 0.5) {                              // nucleus: envelope, chromatin, nucleolus
+      const d = dirU(), u = R(), r = u < 0.55 ? 0.42 : u < 0.85 ? 0.4 * Math.cbrt(R()) : 0.11 * Math.cbrt(R());
+      const off = u >= 0.85 ? [0.1, -0.06, 0.05] : [0, 0, 0];
+      p = [CELL.nucleus[0] + off[0] + d[0] * r, CELL.nucleus[1] + off[1] + d[1] * r, CELL.nucleus[2] + off[2] + d[2] * r]; a = 2;
+    } else if (t < 0.78) {                             // mitochondria: outer membrane and cristae
+      const m = mito[Math.floor(R() * mito.length)], hl = 0.15, r = 0.07;
+      let u, lx, ly;
+      if (R() < 0.62) { u = (R() * 2 - 1) * (hl + r); const rr = Math.abs(u) <= hl ? r : Math.sqrt(Math.max(r * r - (Math.abs(u) - hl) * (Math.abs(u) - hl), 0)), ph = R() * TAU; lx = Math.cos(ph) * rr; ly = Math.sin(ph) * rr; }
+      else { const k = Math.floor(R() * 7) - 3; u = k * 0.045; const s = k % 2 ? 1 : -1; lx = s * (1 - R() * 0.75) * r; ly = (R() * 2 - 1) * Math.sqrt(Math.max(r * r - lx * lx, 0)); }
+      p = [m.c[0] + m.ax[0] * u + m.ux[0] * lx + m.vx[0] * ly, m.c[1] + m.ax[1] * u + m.ux[1] * lx + m.vx[1] * ly, m.c[2] + m.ax[2] * u + m.ux[2] * lx + m.vx[2] * ly];
+      a = 3 + m.lvl * 0.2;
+    } else if (t < 0.87) {                             // endoplasmic reticulum: folded sheets around the nucleus
+      const sh = Math.floor(R() * 4), an = -0.5 + R() * 2.2, rr = 0.56 + sh * 0.075 + 0.016 * Math.sin(an * 9 + sh);
+      p = [CELL.nucleus[0] + Math.cos(an) * rr, CELL.nucleus[1] + Math.sin(an) * rr * 0.92, CELL.nucleus[2] + (R() * 2 - 1) * 0.26]; a = 4;
+    } else {                                           // vesicles and cytosol
+      if (R() < 0.5) { const j = Math.floor(R() * 22), d0 = [hash1(j * 3.1) * 2 - 1, hash1(j * 4.7 + 1) * 2 - 1, hash1(j * 6.3 + 2) * 2 - 1], l = Math.hypot(d0[0], d0[1], d0[2]) || 1, rr = 0.55 + 0.55 * hash1(j * 8.9), d = dirU(); p = [(d0[0] / l) * rr + d[0] * 0.035, (d0[1] / l) * rr + d[1] * 0.035, (d0[2] / l) * rr + d[2] * 0.035]; }
+      else { const d = dirU(), r = CELL.R * 0.93 * Math.cbrt(R()); p = [d[0] * r, d[1] * r, d[2] * r]; }
+      a = 5;
+    }
+    out[o] = p[0]; out[o + 1] = p[1]; out[o + 2] = p[2]; out[o + 3] = a;
+  }
+  return out;
+}
+
+// ---- matrix code: the handshake. Random modules, so it encodes nothing and scans to nothing.
+const CODE = { n: 25, size: 2.5 };
+function buildCode(N, seed) {
+  const R = rng(seed), G = gaussFn(R), n = CODE.n, out = new Float32Array(N * 4);
+  const grid = new Uint8Array(n * n), kind = new Uint8Array(n * n);
+  for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) grid[y * n + x] = R() < 0.47 ? 1 : 0;
+  const finder = (fx, fy) => {
+    for (let y = -1; y <= 7; y++) for (let x = -1; x <= 7; x++) {
+      const X = fx + x, Y = fy + y; if (X < 0 || Y < 0 || X >= n || Y >= n) continue;
+      const ring = Math.max(Math.abs(x - 3), Math.abs(y - 3));
+      grid[Y * n + X] = ring <= 1 || ring === 3 ? 1 : 0; kind[Y * n + X] = 1;
+    }
+  };
+  finder(0, 0); finder(n - 7, 0); finder(0, n - 7);
+  for (let k = 8; k < n - 8; k++) { grid[6 * n + k] = k % 2 === 0 ? 1 : 0; grid[k * n + 6] = k % 2 === 0 ? 1 : 0; }
+  for (let y = -2; y <= 2; y++) for (let x = -2; x <= 2; x++) { const ring = Math.max(Math.abs(x), Math.abs(y)); grid[(18 + y) * n + 18 + x] = ring !== 1 ? 1 : 0; kind[(18 + y) * n + 18 + x] = 1; }
+  const dark = [];
+  for (let k = 0; k < n * n; k++) if (grid[k]) dark.push(k);
+  const s = CODE.size / n, h = CODE.size / 2;
+  for (let i = 0; i < N; i++) {
+    const o = i * 4;
+    if (R() < 0.93) {
+      const k = dark[Math.floor(R() * dark.length)], mx = k % n, my = Math.floor(k / n);
+      out[o] = -h + (mx + 0.08 + R() * 0.84) * s; out[o + 1] = h - (my + 0.08 + R() * 0.84) * s; out[o + 2] = G() * 0.012; out[o + 3] = kind[k] ? 1.5 : 1;
+    } else {                                           // reticle corners around the code
+      const c = Math.floor(R() * 4), sx = c % 2 ? 1 : -1, sy = c < 2 ? 1 : -1, e = h + 0.2, L = 0.46 * R(), hor = R() < 0.5;
+      out[o] = sx * (e - (hor ? L : 0)); out[o + 1] = sy * (e - (hor ? 0 : L)); out[o + 2] = G() * 0.01; out[o + 3] = 2;
+    }
+  }
+  return out;
+}
+
+// ---- records: what arrives on the other side once consent is given
+const RECORDS = { labels: ['Lab results, 2023', 'Lab results, 2024', 'Lab results, 2025', 'Medications', 'Imaging'], w: 2.3, h: 0.36, gap: 0.52 };
+const recordY = (j) => 1.04 - j * RECORDS.gap;
+function buildRecords(N, seed) {
+  const R = rng(seed), G = gaussFn(R), out = new Float32Array(N * 4), w = RECORDS.w, h = RECORDS.h;
+  for (let i = 0; i < N; i++) {
+    const o = i * 4, j = Math.floor(R() * 5), y0 = recordY(j), z0 = (j - 2) * 0.1, x0 = (j - 2) * 0.05, t = R();
+    let x, y, a = 1 + j;
+    if (t < 0.32) {                                    // sheet outline
+      const p = R() * 2 * (w + h);
+      if (p < w) { x = p - w / 2; y = h / 2; } else if (p < w + h) { x = w / 2; y = h / 2 - (p - w); } else if (p < 2 * w + h) { x = w / 2 - (p - w - h); y = -h / 2; } else { x = -w / 2; y = -h / 2 + (p - 2 * w - h); }
+    } else if (t < 0.74) {                             // two rows of entries
+      const row = R() < 0.5 ? 0 : 1, len = 0.5 + 0.45 * hash1(j * 7 + row * 3), u = R() * len, dash = Math.floor(u * 14);
+      if (dash % 3 === 2) { i--; continue; }
+      x = -w / 2 + 0.12 + u * (w - 0.75); y = row ? -0.07 : 0.07;
+    } else {                                           // signature seal and check
+      const cx = w / 2 - 0.26;
+      if (R() < 0.6) { const an = R() * TAU; x = cx + Math.cos(an) * 0.105; y = Math.sin(an) * 0.105; }
+      else { const u = R(); if (u < 0.35) { x = cx - 0.05 + (u / 0.35) * 0.035; y = 0.005 - (u / 0.35) * 0.04; } else { x = cx - 0.015 + ((u - 0.35) / 0.65) * 0.075; y = -0.035 + ((u - 0.35) / 0.65) * 0.085; } }
+      a += 0.5;
+    }
+    out[o] = x0 + x + G() * 0.004; out[o + 1] = y0 + y + G() * 0.004; out[o + 2] = z0 + G() * 0.008; out[o + 3] = a;
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------- WebGL2 plumbing
+function createGL(canvas) {
+  let gl = null;
+  try { gl = canvas.getContext('webgl2', { antialias: false, alpha: false, depth: false, stencil: false, powerPreference: 'high-performance' }); } catch (e) { gl = null; }
+  if (!gl) return null;
+  const f32 = !!gl.getExtension('EXT_color_buffer_float');
+  const f16 = f32 || !!gl.getExtension('EXT_color_buffer_half_float');
+  if (!f16) return null;
+  let renderer = '';
+  try { const dbg = gl.getExtension('WEBGL_debug_renderer_info'); renderer = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (e) { renderer = ''; }
+  return { gl, f32, renderer, maxPoint: gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE)[1] };
+}
+
+function Program(gl, vsSrc, fsSrc, name) {
+  const sh = (type, src) => {
+    const s = gl.createShader(type);
+    gl.shaderSource(s, src); gl.compileShader(s);
+    if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error('shader ' + name + ': ' + gl.getShaderInfoLog(s));
+    return s;
+  };
+  const p = gl.createProgram();
+  gl.attachShader(p, sh(gl.VERTEX_SHADER, vsSrc)); gl.attachShader(p, sh(gl.FRAGMENT_SHADER, fsSrc));
+  gl.linkProgram(p);
+  if (!gl.getProgramParameter(p, gl.LINK_STATUS)) throw new Error('link ' + name + ': ' + gl.getProgramInfoLog(p));
+  const uni = {}, n = gl.getProgramParameter(p, gl.ACTIVE_UNIFORMS);
+  for (let i = 0; i < n; i++) {
+    const info = gl.getActiveUniform(p, i);
+    uni[info.name.replace(/\[0\]$/, '')] = { loc: gl.getUniformLocation(p, info.name), type: info.type, size: info.size };
+  }
+  let unit = 0;
+  const api = {
+    use() { gl.useProgram(p); unit = 0; return api; },
+    set(nm, v) {
+      const u = uni[nm]; if (!u) return api;
+      switch (u.type) {
+        case gl.FLOAT: if (u.size > 1) gl.uniform1fv(u.loc, v); else gl.uniform1f(u.loc, v); break;
+        case gl.INT: case gl.BOOL: gl.uniform1i(u.loc, v); break;
+        case gl.FLOAT_VEC2: gl.uniform2fv(u.loc, v); break;
+        case gl.FLOAT_VEC3: gl.uniform3fv(u.loc, v); break;
+        case gl.FLOAT_VEC4: gl.uniform4fv(u.loc, v); break;
+        case gl.FLOAT_MAT4: gl.uniformMatrix4fv(u.loc, false, v); break;
+        default: break;
+      }
+      return api;
+    },
+    tex(nm, texture) {
+      const u = uni[nm]; if (!u) return api;
+      gl.activeTexture(gl.TEXTURE0 + unit); gl.bindTexture(gl.TEXTURE_2D, texture); gl.uniform1i(u.loc, unit); unit++;
+      return api;
+    },
+  };
+  return api;
+}
+
+function makeTex(gl, w, h, ifmt, fmt, type, filter, data) {
+  const t = gl.createTexture();
+  gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.texImage2D(gl.TEXTURE_2D, 0, ifmt, w, h, 0, fmt, type, data || null);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, filter); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, filter);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  return t;
+}
+function makeTarget(gl, w, h, ifmt, filter, count, datas) {
+  const fb = gl.createFramebuffer(), tex = [], bufs = [];
+  gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
+  for (let i = 0; i < (count || 1); i++) {
+    const t = makeTex(gl, w, h, ifmt, gl.RGBA, gl.FLOAT, filter, datas ? datas[i] : null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, t, 0);
+    tex.push(t); bufs.push(gl.COLOR_ATTACHMENT0 + i);
+  }
+  gl.drawBuffers(bufs);
+  const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
+  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+  return { fb, tex, w, h, ok, free() { tex.forEach((t) => gl.deleteTexture(t)); gl.deleteFramebuffer(fb); } };
+}
+
+// ---------------------------------------------------------------- shaders
+const GLSL_DEFS = `
+#define RING ${LOOP.R.toFixed(4)}
+#define TILT ${LOOP.tilt.toFixed(4)}
+#define CELLR ${CELL.R.toFixed(4)}
+const float TAU = 6.28318530718;
+float sq(float x){ return x * x; }     // never pow(x, 2.0): it is undefined for negative x
+`;
+
+const VS_FULL = `#version 300 es
+out vec2 vUv;
+void main(){ vec2 p = vec2(float((gl_VertexID << 1) & 2), float(gl_VertexID & 2)); vUv = p; gl_Position = vec4(p * 2.0 - 1.0, 0.0, 1.0); }`;
+
+// Particle physics: every particle is a damped spring toward its place in the current
+// shape, stirred by a divergence-free flow, the pointer ray and click shock waves.
+const FS_SIM = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+${GLSL_DEFS}
+uniform sampler2D uPos, uVel, uTA, uTB;
+uniform int uModeA, uModeB;
+uniform float uMorph, uTime, uDt, uTurb, uK, uDamp, uBeat, uBreath, uAdapt, uStress, uLoopRot;
+uniform vec3 uRayO, uRayD, uPtrVel, uBurstP, uHeart, uLung;
+uniform float uPtrOn, uPtrR, uPtrPush, uBurst, uBurstR, uSnap;
+layout(location = 0) out vec4 oPos;
+layout(location = 1) out vec4 oVel;
+vec4 hash4(vec2 p){ vec4 q = fract(vec4(p.xyxy) * vec4(.1031, .1030, .0973, .1099)); q += dot(q, q.wzxy + 33.33); return fract((q.xxyz + q.yzzw) * q.zywx); }
+vec2 rot2(vec2 v, float a){ float c = cos(a), s = sin(a); return vec2(c * v.x - s * v.y, s * v.x + c * v.y); }
+
+vec3 shape(sampler2D tex, int mode, ivec2 uv, vec4 h, out float aux){
+  vec4 T = texelFetch(tex, uv, 0);
+  vec3 p = T.xyz; float a = T.w; aux = 0.0;
+  if (mode == 0) {                                   // body: it breathes and its heart beats
+    float sys = floor(a + 0.001);
+    if (sys == 2.0) { if (fract(a) < 0.25) p = uHeart + (p - uHeart) * (1.0 + 0.09 * uBeat); }
+    else if (sys == 3.0) { vec3 c = vec3(sign(p.x) * uLung.x, uLung.y, uLung.z); p = c + (p - c) * (1.0 + 0.045 * uBreath); }
+    else if (sys == 0.0) { float chest = exp(-sq((p.y - uLung.y) / 0.42)) * smoothstep(-0.05, 0.12, p.z); p.z += 0.014 * uBreath * chest; }
+    else if (sys == 8.0) { p += 0.1 * vec3(sin(uTime * 0.31 + h.x * TAU), sin(uTime * 0.27 + h.y * TAU), sin(uTime * 0.23 + h.z * TAU)); }
+  } else if (mode == 1) {                            // fragments drift apart from each other
+    float id = floor(a);
+    p.y += 0.07 * sin(uTime * 0.55 + id * 1.7); p.x += 0.05 * sin(uTime * 0.4 + id * 2.3);
+  } else if (mode == 2) {
+    p.y += 0.004 * sin(uTime * 2.0 + h.x * TAU);
+  } else if (mode == 3) {                            // loop: the stream is placed here so it can flow
+    if (a < 0.5) {
+      float th = p.x - uTime * 0.2 * (0.75 + 0.5 * h.z);
+      float rr = 0.05 + 0.022 * p.z, tw = 3.0 * th + p.y;
+      aux = fract((th - uLoopRot) / TAU);          // the stream stays put; only its colours turn with the stations
+      p = vec3(cos(th) * (RING + rr * cos(tw)), sin(th) * (RING + rr * cos(tw)), rr * sin(tw));
+    } else p.xy = rot2(p.xy, uLoopRot);
+    p.yz = rot2(p.yz, TILT);
+  } else if (mode == 4) {                            // cell: mitochondria above the adaptation level stay dissolved
+    float comp = floor(a + 0.001);
+    if (comp == 3.0) {
+      float lvl = floor(fract(a) * 5.0 + 0.5);
+      if (lvl > uAdapt + 0.5) { vec3 d = normalize(h.xyz * 2.0 - 1.0 + 1e-4); p = d * CELLR * 0.8 * pow(max(h.w, 1e-4), 0.3333); }
+    }
+    if (comp == 1.0) {
+      vec3 n = normalize(p);
+      float und = sin(n.x * 5.0 + uTime * 0.9) * sin(n.y * 6.0 - uTime * 0.7) * sin(n.z * 5.5 + uTime * 0.8);
+      p += n * (0.035 * und + 0.05 * uStress * sin(uTime * 13.0 + n.y * 9.0 + n.x * 7.0));
+    } else {
+      p += (0.018 + 0.03 * uStress) * vec3(sin(uTime * 0.7 + h.x * TAU), sin(uTime * 0.6 + h.y * TAU), sin(uTime * 0.5 + h.z * TAU));
+    }
+  } else if (mode == 6) {
+    p.y += 0.02 * sin(uTime * 0.8 + floor(a) * 1.3);
+  }
+  return p;
+}
+
+void main(){
+  ivec2 uv = ivec2(gl_FragCoord.xy);
+  vec4 P = texelFetch(uPos, uv, 0), V = texelFetch(uVel, uv, 0);
+  vec4 h = hash4(vec2(uv) + 0.5);
+  float auxA, auxB;
+  vec3 ta = shape(uTA, uModeA, uv, h, auxA), tb = shape(uTB, uModeB, uv, h, auxB);
+  float m = smoothstep(0.0, 1.0, clamp(uMorph * 1.7 - h.x * 0.7, 0.0, 1.0));   // particles leave at different moments
+  vec3 target = mix(ta, tb, m);
+  float aux = m < 0.5 ? auxA : auxB;
+  if (uSnap > 0.5) { oPos = vec4(target, aux); oVel = vec4(0.0, 0.0, 0.0, m); return; }
+  vec3 pos = P.xyz, vel = V.xyz;
+  vec3 acc = (target - pos) * (uK * mix(10.0, 26.0, h.y));
+  vec3 q = pos * 0.85 + vec3(0.0, uTime * 0.12, 0.0);
+  acc += vec3(sin(q.z * 1.3) + cos(q.y * 1.7), sin(q.x * 1.5) + cos(q.z * 1.1), sin(q.y * 1.9) + cos(q.x * 1.4)) * uTurb * (0.5 + h.z);
+  vec3 w = pos - uRayO; float tt = max(dot(w, uRayD), 0.0); vec3 dv = w - uRayD * tt; float d2 = dot(dv, dv);
+  float g = exp(-d2 / (uPtrR * uPtrR)) * uPtrOn;
+  vec3 dn = dv / (sqrt(d2) + 1e-4);
+  acc += dn * uPtrPush * g + cross(uRayD, dn) * (uPtrPush * 0.66) * g + uPtrVel * 22.0 * g;   // a resting pointer leaves a dimple, a moving one stirs
+  vec3 bv = pos - uBurstP; float bl = length(bv) + 1e-4;
+  acc += (bv / bl) * uBurst * exp(-sq((bl - uBurstR) / 0.32)) * 60.0;
+  vel += acc * uDt; vel *= exp(-uDamp * uDt);
+  float sp = length(vel); if (sp > 14.0) vel *= 14.0 / sp;
+  pos += vel * uDt;
+  oPos = vec4(pos, aux); oVel = vec4(vel, m);
+}`;
+
+// Particles: one GL point each, looked up from the state textures by vertex id.
+// Cool colours are biology, warm colours are behaviour.
+const VS_POINTS = `#version 300 es
+precision highp float;
+precision highp sampler2D;
+${GLSL_DEFS}
+uniform sampler2D uPos, uVel, uTA, uTB;
+uniform int uN, uModeA, uModeB;
+uniform mat4 uView, uProj;
+uniform float uPxScale, uSize, uFocus, uAperture, uTime, uMirror, uFloorY, uBeatPhase, uCursorX, uLoopAct, uStress, uOver, uAdapt, uScan, uGain, uAnyAct, uMaxPoint;
+uniform float uSysW[9];
+uniform vec3 uHeart;
+out vec3 vCol;
+out float vPx;
+const vec3 BIO = vec3(0.20, 0.98, 0.72);
+const vec3 DEEP = vec3(0.05, 0.42, 0.88);
+const vec3 LIFE = vec3(1.0, 0.55, 0.15);
+const vec3 HOT = vec3(1.0, 0.24, 0.13);
+const vec3 PAPER = vec3(1.0, 0.93, 0.82);
+float h1(float n){ return fract(sin(n * 127.1 + 311.7) * 43758.5453); }
+float beatEnv(float ph){ return exp(-sq((ph - 0.12) / 0.055)) + 0.55 * exp(-sq((ph - 0.34) / 0.07)); }
+vec3 zoneCol(float s){
+  vec3 Z[6] = vec3[6](PAPER, BIO, LIFE, mix(LIFE, HOT, 0.5), BIO, PAPER);
+  float f = floor(s); int i0 = int(mod(f, 6.0)), i1 = int(mod(f + 1.0, 6.0));
+  return mix(Z[i0], Z[i1], smoothstep(0.3, 0.7, s - f));
+}
+void main(){
+  ivec2 uv = ivec2(gl_VertexID % uN, gl_VertexID / uN);
+  vec4 P = texelFetch(uPos, uv, 0), V = texelFetch(uVel, uv, 0);
+  bool second = V.w >= 0.5;
+  float attr = second ? texelFetch(uTB, uv, 0).w : texelFetch(uTA, uv, 0).w;
+  int mode = second ? uModeB : uModeA;
+  float rnd = h1(float(gl_VertexID) * 0.0137);
+  vec3 pos = P.xyz, col = BIO; float br = 1.0, sz = 1.0;
+  if (mode == 0) {
+    int sys = int(floor(attr + 0.001));
+    if (sys == 0) { col = mix(DEEP, BIO, 0.3 + 0.7 * rnd); br = mix(0.5, 0.15, uAnyAct); }
+    else if (sys == 8) { col = mix(LIFE, HOT, rnd * 0.5); br = 0.6 * (0.6 + 0.4 * sin(uTime * 1.3 + rnd * 40.0)); sz = 1.25; }
+    else {
+      float w = uSysW[sys];
+      col = mix(mix(BIO, DEEP, 0.3), mix(BIO, PAPER, 0.55), w);
+      br = mix(mix(0.36, 0.06, uAnyAct), 0.72, w); sz = mix(1.0, 1.12, w);
+      if (sys == 2) {
+        float e = beatEnv(fract(attr) < 0.25 ? uBeatPhase : fract(uBeatPhase - distance(pos, uHeart) * 0.085));
+        br *= 1.0 + 1.5 * e; col = mix(col, mix(PAPER, HOT, 0.4), 0.4 * e * max(w, 0.3));
+      }
+    }
+  } else if (mode == 1) {
+    col = fract(attr) > 0.25 ? LIFE : mix(BIO, DEEP, 0.2); br = 0.85;
+  } else if (mode == 2) {
+    int lane = int(floor(attr + 0.001));
+    if (lane <= 1) { col = mix(BIO, PAPER, 0.25); br = 0.42; sz = 1.15; }
+    else if (lane <= 7) { col = mix(LIFE, HOT, float(lane - 2) / 7.0); br = 0.9; }
+    else if (lane == 8) { col = DEEP; br = 0.16; }
+    else { col = PAPER; br = 0.3; }
+    float near = exp(-sq((pos.x - uCursorX) / 0.035));
+    if (lane <= 7) { br *= mix(1.0, 0.1, smoothstep(uCursorX - 0.03, uCursorX + 0.03, pos.x)); br += 2.4 * near; }
+    else if (lane == 9) br += 1.5 * near;
+  } else if (mode == 3) {
+    if (attr < 0.5) {
+      float s = fract(0.25 - P.w) * 6.0;
+      col = zoneCol(s);
+      float up = mod(uLoopAct - s + 6.0, 6.0);        // how far upstream of the active station
+      br = 0.4 + 0.7 * (1.0 - smoothstep(0.0, 1.0, up));
+    } else {
+      float s = attr - 1.0, d = abs(mod(s - uLoopAct + 3.0, 6.0) - 3.0), on = 1.0 - smoothstep(0.2, 0.8, d);
+      col = mix(zoneCol(s), PAPER, 0.3 * on); br = mix(0.4, 1.0, on); sz = mix(1.0, 1.15, on);
+    }
+  } else if (mode == 4) {
+    int comp = int(floor(attr + 0.001));
+    if (comp == 1) { col = mix(mix(BIO, DEEP, 0.3), HOT, uOver * (0.5 + 0.5 * sin(uTime * 30.0 + rnd * 20.0))); br = 0.55; }
+    else if (comp == 2) { col = mix(DEEP, BIO, 0.25 * rnd); br = 0.9; }
+    else if (comp == 3) {
+      float lvl = floor(fract(attr) * 5.0 + 0.5);
+      if (lvl > uAdapt + 0.5) { col = LIFE; br = 0.16; }
+      else { col = mix(LIFE, HOT, clamp(uStress * 0.8, 0.0, 1.0)); br = 0.6 + 1.2 * uStress; sz = 1.1; }
+    }
+    else if (comp == 4) { col = mix(BIO, PAPER, 0.35); br = 0.5; }
+    else { col = mix(DEEP, BIO, 0.5); br = 0.22; }
+  } else if (mode == 5) {
+    if (attr > 1.9) { col = LIFE; br = 0.9; }
+    else if (attr > 1.2) { col = BIO; br = 1.2; }
+    else { col = mix(PAPER, BIO, 0.25); br = 0.7; }
+    br += 1.5 * exp(-sq((pos.y - uScan) / 0.07));
+  } else {
+    if (fract(attr) > 0.25) { col = mix(LIFE, PAPER, 0.3); br = 0.6; } else { col = mix(BIO, DEEP, 0.15); br = 0.8; }
+  }
+  float speed = length(V.xyz);
+  col = mix(col, vec3(0.72, 0.88, 1.0), smoothstep(2.0, 7.0, speed) * 0.6);     // flung particles go pale
+  br *= 1.0 + 0.9 * smoothstep(0.4, 3.5, speed);
+  float blur = 0.0;
+  if (uMirror > 0.5) { float hgt = max(pos.y - uFloorY, 0.0); br *= 0.2 * exp(-hgt * 0.75); blur = 0.8 + hgt * 1.3; pos.y = 2.0 * uFloorY - pos.y; }
+  vec4 vp = uView * vec4(pos, 1.0);
+  float depth = max(-vp.z, 0.05);
+  gl_Position = uProj * vp;
+  float base = uSize * sz * uPxScale / depth;
+  base = base < 1.2 ? base : min(1.2 + (base - 1.2) * 0.35, 3.2);     // close-ups stay made of points
+  float coc = uAperture * abs(depth - uFocus) / depth * uPxScale * 0.02 + blur;
+  float d0 = base * 2.0, d = max(d0 + coc * 2.0, 1.0);
+  float inten = br * uGain * pow(clamp(d0 / d, 1e-4, 1.0), 1.65) * smoothstep(0.35, 0.9, depth);
+  vPx = min(d, uMaxPoint);
+  gl_PointSize = vPx;
+  vCol = col * inten;
+}`;
+const FS_POINTS = `#version 300 es
+precision highp float;
+in vec3 vCol;
+in float vPx;
+out vec4 o;
+void main(){
+  vec2 c = gl_PointCoord * 2.0 - 1.0; float r = length(c);
+  if (r > 1.0) discard;
+  float dotA = 1.0 - smoothstep(0.5, 1.0, r);
+  float disc = (1.0 - smoothstep(0.86, 1.0, r)) * (0.55 + 0.8 * smoothstep(0.4, 0.92, r));   // bokeh disc with a rim
+  o = vec4(vCol * mix(dotA, disc, smoothstep(5.0, 9.0, vPx)), 1.0);
+}`;
+
+// Backdrop: deep petrol ground, a soft glow behind the subject and a measuring platform under the body.
+const FS_BACK = `#version 300 es
+precision highp float;
+in vec2 vUv;
+out vec4 o;
+uniform vec2 uRes, uProjK, uShift;
+uniform vec3 uCamPos, uCamR, uCamU, uCamF;
+uniform float uFloorY, uFloorW, uGlow, uBeat, uWarm;
+void main(){
+  vec2 ndc = vUv * 2.0 - 1.0;
+  vec2 c = (ndc - uShift) * vec2(uRes.x / uRes.y, 1.0);
+  float r = length(c);
+  vec3 col = mix(vec3(0.0034, 0.0080, 0.0105), vec3(0.0010, 0.0026, 0.0038), smoothstep(0.0, 1.7, r));
+  col += mix(vec3(0.006, 0.022, 0.026), vec3(0.03, 0.014, 0.004), uWarm) * exp(-r * r * 1.5) * uGlow;
+  vec3 rd = normalize(uCamR * ((ndc.x - uShift.x) * uProjK.x) + uCamU * ((ndc.y - uShift.y) * uProjK.y) + uCamF);
+  if (uFloorW > 0.002 && rd.y < -0.0005) {
+    float t = (uFloorY - uCamPos.y) / rd.y;
+    vec3 p = uCamPos + rd * t; float d = length(p.xz);
+    float fade = exp(-d * d * 0.085) * (1.0 - smoothstep(10.0, 40.0, t));
+    float wd = max(fwidth(d), 1e-4);
+    float ring = (1.0 - smoothstep(0.0, wd * 1.3, abs(fract(d * 2.0 + 0.5) - 0.5) * 0.5)) * step(d, 3.3) * step(0.3, d);
+    float ang = atan(p.z, p.x), wa = min(max(fwidth(ang), 1e-4), 0.03);
+    float tick = (1.0 - smoothstep(0.0, wa * 1.4, abs(fract(ang * 5.7295779 + 0.5) - 0.5) / 5.7295779)) * step(3.05, d) * step(d, 3.22);
+    float lines = min(ring * 0.4 + tick * 0.6, 1.0) * clamp(0.02 / wd, 0.0, 1.0);
+    col += uFloorW * fade * (vec3(0.010, 0.036, 0.040) * exp(-d * d * 0.5) * (1.0 + 0.6 * uBeat) + vec3(0.035, 0.12, 0.125) * lines);
+  }
+  o = vec4(col, 1.0);
+}`;
+
+const FS_PREFILTER = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform sampler2D uTex; uniform float uThresh;
+void main(){
+  vec3 c = texture(uTex, vUv).rgb;
+  float br = max(c.r, max(c.g, c.b)), knee = uThresh * 0.5;
+  float soft = clamp(br - uThresh + knee, 0.0, 2.0 * knee); soft = soft * soft / (4.0 * knee + 1e-4);
+  o = vec4(min(c * max(soft, br - uThresh) / max(br, 1e-4), vec3(24.0)), 1.0);
+}`;
+const FS_DOWN = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform sampler2D uTex; uniform vec2 uTexel;
+void main(){
+  vec2 h = uTexel;
+  vec3 s = texture(uTex, vUv).rgb * 4.0 + texture(uTex, vUv - h).rgb + texture(uTex, vUv + h).rgb + texture(uTex, vUv + vec2(h.x, -h.y)).rgb + texture(uTex, vUv - vec2(h.x, -h.y)).rgb;
+  o = vec4(s / 8.0, 1.0);
+}`;
+const FS_UP = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform sampler2D uTex; uniform vec2 uTexel;
+void main(){
+  vec2 h = uTexel * 0.5;
+  vec3 s = texture(uTex, vUv + vec2(-h.x * 2.0, 0.0)).rgb + texture(uTex, vUv + vec2(0.0, h.y * 2.0)).rgb + texture(uTex, vUv + vec2(h.x * 2.0, 0.0)).rgb + texture(uTex, vUv + vec2(0.0, -h.y * 2.0)).rgb;
+  s += (texture(uTex, vUv + vec2(-h.x, h.y)).rgb + texture(uTex, vUv + h).rgb + texture(uTex, vUv + vec2(h.x, -h.y)).rgb + texture(uTex, vUv - h).rgb) * 2.0;
+  o = vec4(s / 12.0, 1.0);
+}`;
+// Final picture: lens fringing that grows with scroll speed, a frosted warp while shapes change, tone curve, vignette, grain.
+const FS_COMPOSITE = `#version 300 es
+precision highp float;
+in vec2 vUv; out vec4 o;
+uniform sampler2D uScene, uBloom;
+uniform float uCA, uWarp, uTime, uBloomK, uFade, uExposure;
+float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+float vnoise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y); }
+vec3 aces(vec3 x){ return clamp((x * (2.51 * x + 0.03)) / (x * (2.43 * x + 0.59) + 0.14), 0.0, 1.0); }
+void main(){
+  vec2 uv = vUv;
+  if (uWarp > 0.001) uv += (vec2(vnoise(uv * 7.0 + uTime * 0.3), vnoise(uv * 7.0 + 31.7 - uTime * 0.3)) - 0.5) * 0.022 * uWarp;
+  vec2 c = uv - 0.5, off = c * uCA;
+  vec3 col = vec3(texture(uScene, uv + off).r, texture(uScene, uv).g, texture(uScene, uv - off).b);
+  vec3 bl = vec3(texture(uBloom, uv + off * 1.5).r, texture(uBloom, uv).g, texture(uBloom, uv - off * 1.5).b);
+  col = aces((col + bl * uBloomK) * uExposure);
+  col = pow(max(col, vec3(0.0)), vec3(1.0 / 2.2));
+  col *= mix(1.0, 0.6, smoothstep(0.18, 0.62, dot(c, c)));
+  col += (hash(gl_FragCoord.xy + fract(uTime) * vec2(113.0, 71.0)) - 0.5) * 0.022;
+  o = vec4(col * uFade, 1.0);
+}`;
+
+// ---------------------------------------------------------------- engine: simulate, draw, post-process
+const MODE = { body: 0, frag: 1, time: 2, loop: 3, cell: 4, code: 5, rec: 6 };
+
+function Engine(caps, tier) {
+  const gl = caps.gl, N = tier.n, COUNT = N * N;
+  const simFmt = caps.f32 ? gl.RGBA32F : gl.RGBA16F;
+  gl.bindVertexArray(gl.createVertexArray());           // every draw works from gl_VertexID alone
+  const P = {
+    sim: Program(gl, VS_FULL, FS_SIM, 'sim'), points: Program(gl, VS_POINTS, FS_POINTS, 'points'), back: Program(gl, VS_FULL, FS_BACK, 'back'),
+    pre: Program(gl, VS_FULL, FS_PREFILTER, 'prefilter'), down: Program(gl, VS_FULL, FS_DOWN, 'down'), up: Program(gl, VS_FULL, FS_UP, 'up'), comp: Program(gl, VS_FULL, FS_COMPOSITE, 'composite'),
+  };
+
+  // particles start as a wide scattered cloud and find the figure by themselves
+  const R = rng(99), G = gaussFn(R), init = new Float32Array(COUNT * 4), zero = new Float32Array(COUNT * 4);
+  for (let i = 0; i < COUNT; i++) {
+    const x = G(), y = G(), z = G(), l = Math.hypot(x, y, z) || 1, r = 0.6 + 2.0 * Math.cbrt(R());
+    init[i * 4] = (x / l) * r * 1.25; init[i * 4 + 1] = (y / l) * r; init[i * 4 + 2] = (z / l) * r * 0.8;
+  }
+  let A = makeTarget(gl, N, N, simFmt, gl.NEAREST, 2, [init, zero]);
+  let B = makeTarget(gl, N, N, simFmt, gl.NEAREST, 2, [init, zero]);
+  if (!A.ok || !B.ok) throw new Error('float render targets are not available');
+
+  const shapes = {};
+  const setShape = (name, data) => {
+    if (shapes[name]) gl.deleteTexture(shapes[name]);
+    shapes[name] = makeTex(gl, N, N, gl.RGBA32F, gl.RGBA, gl.FLOAT, gl.NEAREST, data);
+  };
+
+  let W = 0, H = 0, scene = null, bloom = [];
+  function resize(w, h) {
+    if (w === W && h === H) return;
+    W = w; H = h;
+    if (scene) scene.free();
+    bloom.forEach((b) => b.free());
+    scene = makeTarget(gl, W, H, gl.RGBA16F, gl.LINEAR, 1);
+    bloom = [];
+    let bw2 = W, bh2 = H;
+    for (let i = 0; i < 5; i++) {
+      bw2 = Math.max(2, bw2 >> 1); bh2 = Math.max(2, bh2 >> 1);
+      bloom.push(makeTarget(gl, bw2, bh2, gl.RGBA16F, gl.LINEAR, 1));
+    }
+  }
+  const tri = () => gl.drawArrays(gl.TRIANGLES, 0, 3);
+
+  function frame(s) {
+    // ---- 1. physics, ping-ponged between two pairs of state textures
+    gl.disable(gl.BLEND);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, B.fb); gl.viewport(0, 0, N, N);
+    P.sim.use().tex('uPos', A.tex[0]).tex('uVel', A.tex[1]).tex('uTA', shapes[s.shapeA]).tex('uTB', shapes[s.shapeB])
+      .set('uModeA', MODE[s.shapeA]).set('uModeB', MODE[s.shapeB]).set('uMorph', s.morph).set('uTime', s.time).set('uDt', s.dt)
+      .set('uTurb', s.turb).set('uK', s.k).set('uDamp', s.damp).set('uBeat', s.beat).set('uBreath', s.breath).set('uAdapt', s.adapt)
+      .set('uStress', s.stress).set('uLoopRot', s.loopRot).set('uRayO', s.rayO).set('uRayD', s.rayD).set('uPtrVel', s.ptrVel)
+      .set('uBurstP', s.burstP).set('uHeart', HEART_W).set('uLung', LUNG_W).set('uPtrOn', s.ptrOn).set('uPtrR', s.ptrR)
+      .set('uBurst', s.burst).set('uBurstR', s.burstR).set('uSnap', s.snap ? 1 : 0).set('uPtrPush', s.ptrPush);
+    tri();
+    const t = A; A = B; B = t;
+
+    // ---- 2. the picture, in floating point so that bright things can bloom
+    gl.bindFramebuffer(gl.FRAMEBUFFER, scene.fb); gl.viewport(0, 0, W, H);
+    P.back.use().set('uRes', [W, H]).set('uProjK', [1 / s.proj[0], 1 / s.proj[5]]).set('uShift', s.shift)
+      .set('uCamPos', s.eye).set('uCamR', s.basis.r).set('uCamU', s.basis.u).set('uCamF', s.basis.f)
+      .set('uFloorY', FLOOR_Y).set('uFloorW', s.floorW).set('uGlow', s.glow).set('uBeat', s.beat).set('uWarm', s.warm);
+    tri();
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+    const pp = P.points.use().tex('uPos', A.tex[0]).tex('uVel', A.tex[1]).tex('uTA', shapes[s.shapeA]).tex('uTB', shapes[s.shapeB])
+      .set('uN', N).set('uModeA', MODE[s.shapeA]).set('uModeB', MODE[s.shapeB]).set('uView', s.view).set('uProj', s.proj)
+      .set('uPxScale', H * 0.5 * s.proj[5]).set('uSize', s.size).set('uFocus', s.focus).set('uAperture', s.aperture).set('uTime', s.time)
+      .set('uFloorY', FLOOR_Y).set('uBeatPhase', s.beatPhase).set('uCursorX', s.cursorX).set('uLoopAct', s.loopAct).set('uStress', s.stress)
+      .set('uOver', s.over).set('uAdapt', s.adapt).set('uScan', s.scan).set('uAnyAct', s.anyAct).set('uMaxPoint', Math.min(caps.maxPoint, 56))
+      .set('uSysW', s.sysW).set('uHeart', HEART_W);
+    // particle order is random, so any leading share of them is an even sample: the reflection uses half, and a slow machine may draw fewer
+    const drawn = Math.max(1, Math.floor(COUNT * s.frac));
+    if (s.floorW > 0.02 && s.frac >= 1) { pp.set('uMirror', 1).set('uGain', s.gain * s.floorW * 2); gl.drawArrays(gl.POINTS, 0, COUNT >> 1); }
+    pp.set('uMirror', 0).set('uGain', s.gain / s.frac); gl.drawArrays(gl.POINTS, 0, drawn);
+
+    // ---- 3. bloom: threshold, four downsamples, additive upsamples back up the chain
+    gl.disable(gl.BLEND);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, bloom[0].fb); gl.viewport(0, 0, bloom[0].w, bloom[0].h);
+    P.pre.use().tex('uTex', scene.tex[0]).set('uThresh', 0.55); tri();
+    for (let i = 1; i < bloom.length; i++) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, bloom[i].fb); gl.viewport(0, 0, bloom[i].w, bloom[i].h);
+      P.down.use().tex('uTex', bloom[i - 1].tex[0]).set('uTexel', [1 / bloom[i - 1].w, 1 / bloom[i - 1].h]); tri();
+    }
+    gl.enable(gl.BLEND); gl.blendFunc(gl.ONE, gl.ONE);
+    for (let i = bloom.length - 2; i >= 0; i--) {
+      gl.bindFramebuffer(gl.FRAMEBUFFER, bloom[i].fb); gl.viewport(0, 0, bloom[i].w, bloom[i].h);
+      P.up.use().tex('uTex', bloom[i + 1].tex[0]).set('uTexel', [1 / bloom[i + 1].w, 1 / bloom[i + 1].h]); tri();
+    }
+    gl.disable(gl.BLEND);
+
+    // ---- 4. lens and film
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, W, H);
+    P.comp.use().tex('uScene', scene.tex[0]).tex('uBloom', bloom[0].tex[0]).set('uCA', s.ca).set('uWarp', s.warp).set('uTime', s.time)
+      .set('uBloomK', s.bloom).set('uFade', s.fade).set('uExposure', s.exposure);
+    tri();
+  }
+  return { N, COUNT, setShape, resize, frame };
+}
+
+// ---------------------------------------------------------------- content and choreography
+// Everything the page says and every camera position lives here.
+// All figures are the worked examples from the HCH founding summary, shown as a sample member.
+
+const TR = 0.44;        // screens of scroll spent morphing into the next chapter
+const CHAPTERS = [
+  { id: 'overview', nav: 'Overview', len: 0.95, shape: 'body', root: 55.0 },
+  { id: 'fragments', nav: 'In pieces', len: 1.15, shape: 'frag', root: 49.0 },
+  { id: 'model', nav: 'One model', len: 3.1, shape: 'body', root: 55.0 },
+  { id: 'timeline', nav: 'Timeline', len: 1.8, shape: 'time', root: 65.41 },
+  { id: 'loop', nav: 'The loop', len: 2.8, shape: 'loop', root: 61.74 },
+  { id: 'hormesis', nav: 'Hormesis', len: 1.2, shape: 'cell', root: 73.42 },
+  { id: 'record', nav: 'Your record', len: 1.25, shape: 'code', root: 51.91 },
+  { id: 'clinicians', nav: 'With your physician', len: 1.05, shape: 'body', root: 58.27 },
+  { id: 'access', nav: 'Access', len: 0.4, shape: 'body', root: 55.0 },
+];
+{ let s = 0; CHAPTERS.forEach((c) => { c.start = s; s += c.len; }); }
+const W_END = CHAPTERS[CHAPTERS.length - 1].start + CHAPTERS[CHAPTERS.length - 1].len;   // total scroll, in screens
+
+// Camera poses. t: look-at point, d: distance, sx/sy: lens shift (moves the picture without
+// changing perspective, which is what leaves room for the words), ap: aperture, fo: focus offset.
+// fit: which part of the window the subject must stay inside (right of the words, between the two columns...);
+// the lens shift and the distance are then worked out from the real layout. hw: the subject's half-width.
+// n*: overrides for narrow screens, where the model sits above the text instead of beside it.
+const A = SYS_ANCHOR;
+const POSES = {
+  overview: { push: 3.5, fit: 'right', t: [0, 0.05, 0], d: 7.6, yaw: 0.35, pitch: 0.03, sx: 0.36, sy: 0.02, ap: 1.2, fo: 0, floor: 1, glow: 1, warm: 0, ptrR: 0.36, hw: 0.75, nd: 10.4, nsy: 0.42 },
+  fragments: { fit: 'full', t: [0, 0, 0], d: 9.8, yaw: 0, pitch: 0, sx: 0, sy: 0, ap: 0.6, fo: 0, floor: 0, glow: 0.5, warm: 0, ptrR: 0.5, hw: 5, nd: 9, nsy: 0 },
+  model: { push: 3.5, fit: 'mid', t: [0, 0.1, 0], d: 7.4, yaw: -0.25, pitch: 0.03, sx: 0.02, sy: 0, ap: 1.2, fo: 0, floor: 1, glow: 1, warm: 0, ptrR: 0.3, hw: 0.75, nd: 10.4, nsy: 0.42 },
+  timeline: { fit: 'time', t: [0, 0, 0], d: 12.4, yaw: -0.26, pitch: 0.05, sx: -0.08, sy: 0.34, ap: 0.1, fo: 0, floor: 0, glow: 0.6, warm: 0.5, ptrR: 0.35, hw: 3.7, nhw: 1.45, nd: 9, nsy: 0.4 },
+  loop: { fit: 'right', t: [0, -0.3, 0], d: 7.6, yaw: 0, pitch: 0.13, sx: 0.32, sy: 0, ap: 0.4, fo: -1.3, floor: 0, glow: 0.8, warm: 0.3, ptrR: 0.4, hw: 2.0, nd: 9, nsy: 0.4 },
+  hormesis: { fit: 'right', t: [0, 0, 0], d: 6.0, yaw: 0.3, pitch: 0, sx: 0.32, sy: 0, ap: 0.5, fo: -0.3, floor: 0, glow: 1, warm: 0.2, ptrR: 0.45, hw: 1.5, nd: 8.5, nsy: 0.46 },
+  record: { fit: 'mid', t: [0, 0, 0], d: 8.6, yaw: -0.2, pitch: 0, sx: 0.05, sy: 0.04, ap: 0.2, fo: 0, floor: 0, glow: 0.7, warm: 0, ptrR: 0.4, hw: 1.3, minAvail: 0.2, nhw: 1.95, nd: 9, nsy: 0.46 },
+  clinicians: { push: 3.5, fit: 'mid', t: [0, 0.72, 0], d: 4.8, yaw: 0.45, pitch: 0.02, sx: 0.04, sy: 0, ap: 1.7, fo: 0, floor: 1, glow: 1, warm: 0, ptrR: 0.3, hw: 0.8, nd: 8.6, nsy: 0.54 },
+  access: { push: 3.5, fit: 'right', t: [0, 0.05, 0], d: 8.4, yaw: -0.42, pitch: 0.03, sx: 0.4, sy: 0.02, ap: 1.2, fo: 0, floor: 1, glow: 1, warm: 0, ptrR: 0.36, hw: 0.75, nd: 10.8, nsy: 0.42 },
+};
+
+const SYSTEMS = [
+  { id: 1, name: 'Brain', state: 'Sleep is the lever right now.',
+    rows: [['HRV, 7-day average', '+12%', 'since the sleep change'], ['Sleep timing kept', '72%', 'of nights'], ['Cognitive testing', 'Stable', '']],
+    now: 'Fixed wake time, caffeine before noon.', cam: { t: [A[1][0], A[1][1] - 0.12, 0], d: 3.3, yaw: 0.6, ap: 2.0 } },
+  { id: 2, name: 'Cardiovascular', state: 'ApoB is falling after a diet change.',
+    rows: [['ApoB', '91 mg/dL', 'was 115'], ['Resting heart rate', '−4 bpm', 'over 8 weeks'], ['VO₂max estimate', '+6%', 'over 8 weeks']],
+    now: 'Less saturated fat and more soluble fiber, for eight weeks.', cam: { t: [0, 0.45, 0], d: 5.0, yaw: 0.22, ap: 1.6 } },
+  { id: 3, name: 'Lungs', state: 'Fitness is improving below the prescribed dose.',
+    rows: [['Zone 2 training', '112 min/wk', 'prescribed 150'], ['Adherence', '75%', ''], ['VO₂max estimate', '+6%', '']],
+    now: 'Build toward 150 minutes a week.', cam: { t: A[3], d: 3.5, yaw: -0.28, ap: 2.2 } },
+  { id: 4, name: 'Liver', state: 'In range. Alcohol is the open question.',
+    rows: [['Liver panel', 'In range', 'last draw'], ['Alcohol target kept', '58%', 'of weeks'], ['hsCRP', 'Stable', '']],
+    now: 'Alcohol target to be reviewed at the next visit.', cam: { t: [A[4][0] + 0.06, A[4][1], A[4][2]], d: 3.1, yaw: -0.42, ap: 2.4 } },
+  { id: 5, name: 'Gastrointestinal', state: 'Fiber intake has nearly doubled.',
+    rows: [['Fiber', '34 g/day', 'was 18'], ['Nutrition target kept', '89%', ''], ['Microbiome', 'Sequenced', 'used when it changes a decision']],
+    now: 'Soluble fiber with two meals a day.', cam: { t: [0, A[5][1] + 0.1, A[5][2]], d: 3.4, yaw: 0.26, ap: 2.2 } },
+  { id: 6, name: 'Musculoskeletal', state: 'Strength is progressing and weight is steady.',
+    rows: [['Resistance sessions kept', '94%', ''], ['Body weight', 'Unchanged', ''], ['Injury and pain', 'None reported', '']],
+    now: 'Progressive loading, three sessions a week.', cam: { t: [0, 0.15, 0], d: 6.4, yaw: 2.55, ap: 1.3 } },
+  { id: 7, name: 'Metabolic', state: 'Overnight glucose rose with late dinners.',
+    rows: [['Overnight glucose', 'Rising', 'from the glucose monitor'], ['Sleep', 'About 8 h', 'consistent'], ['Training volume', 'High', '']],
+    now: 'An earlier evening meal first, before adding exercise.', cam: { t: [0, 0.25, 0], d: 5.6, yaw: -0.2, ap: 1.5 } },
+];
+
+const DAYS = [
+  [0, 'Blood test. Starts creatine.'], [11, 'Changes diet.'], [24, 'Sleep deteriorates.'], [31, 'Increases training load.'],
+  [47, 'Begins a medication.'], [59, 'Gets sick.'], [70, 'Stops drinking alcohol.'], [91, 'Blood test.'],
+];
+
+const STATIONS = [
+  ['Observe the human', 'Saturated fat averages 42 g a day and fiber 18 g. Red meat six times a week. Training five days a week, sleep excellent.'],
+  ['Understand the human', 'ApoB has climbed from 92 to 104 to 115 mg/dL since the diet changed eight months ago. Exercise is already high, so diet is the higher-value target.'],
+  ['Change something', 'Cut saturated fat and raise soluble fiber for eight weeks. Hold training and body weight steady.'],
+  ['Verify it was actually changed', 'Saturated fat went from 42 to 17 g a day, fiber from 18 to 34 g. Weight and training unchanged.'],
+  ['Measure what happened', 'ApoB fell from 115 to 91 mg/dL.'],
+  ['Learn what works for that human', 'This response joins the permanent model of this person. The next decision starts from it.'],
+];
+
+const ADHERENCE = [['Nutrition target', 89], ['Resistance training', 94], ['Cardiovascular target', 87], ['Sleep timing', 72], ['Medication', 100], ['Alcohol target', 58]];
+
+// hormesis demo: each press adds a dose; what the cell does depends on the peak it has to recover from
+const DOSE = { step: 0.2, low: 0.3, high: 0.78, decay: 0.19, max: 3 };
+
+// ---------------------------------------------------------------- interface pieces (DOM over the canvas, so the words stay real text)
+const $ = (s, r) => (r || document).querySelector(s);
+const mk = (tag, cls, text) => { const e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined) e.textContent = text; return e; };
+const REDUCE = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Scramble for monospaced readouts. Unrevealed characters are non-breaking spaces so nothing reflows.
+const GLYPHS = '0123456789ACGT+/=';
+function scramble(node, text, dur) {
+  if (REDUCE || !node) { if (node) node.textContent = text; return; }
+  const id = (node._sc = (node._sc || 0) + 1), t0 = performance.now(), n = text.length;
+  const total = dur || 420 + n * 9;
+  let skip = false;
+  (function tick(now) {
+    if (node._sc !== id) return;
+    const p = clamp((now - t0) / total, 0, 1), cut = Math.floor(p * n);
+    skip = !skip;
+    if (skip || p >= 1) {
+      let s = text.slice(0, cut);
+      for (let i = cut; i < n; i++) s += text[i] === ' ' ? ' ' : i < cut + 3 ? GLYPHS[(Math.random() * GLYPHS.length) | 0] : ' ';
+      node.textContent = s;
+    }
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+
+const UI = { sys: [], days: [], stations: [], bars: [], lb: { frag: [], lane: [], st: [], rec: [], day: null } };
+
+function buildDom() {
+  const rail = $('#rail'), track = $('#track'), labels = $('#labels');
+  CHAPTERS.forEach((c) => {
+    const a = mk('a'); a.href = '#' + c.id; a.appendChild(mk('span', '', c.nav)); rail.appendChild(a); c.railEl = a;
+    const an = mk('span', 'anchor'); an.id = c.id; track.appendChild(an); c.anchorEl = an;
+    c.sectionEl = $('#s-' + c.id);
+  });
+  SYSTEMS.forEach((s, k) => {
+    const li = mk('li'), b = mk('button', '', s.name); b.type = 'button'; b.setAttribute('aria-pressed', 'false'); b.dataset.k = k;
+    li.appendChild(b); $('#systems').appendChild(li); UI.sys.push(b);
+  });
+  DAYS.forEach((d) => {
+    const li = mk('li'); li.appendChild(mk('b', '', 'day ' + d[0])); li.appendChild(mk('span', '', d[1])); $('#days').appendChild(li); UI.days.push(li);
+  });
+  STATIONS.forEach((s, k) => {
+    const li = mk('li'), b = mk('button', '', s[0]), body = mk('div', 'body'); b.type = 'button'; b.dataset.k = k; b.setAttribute('aria-expanded', 'false');
+    body.appendChild(mk('p', '', s[1])); li.appendChild(b); li.appendChild(body); $('#stations').appendChild(li); UI.stations.push(li);
+  });
+  ADHERENCE.forEach((r) => {
+    const li = mk('li'), bar = mk('span', 'bar'), fill = mk('i');
+    li.appendChild(mk('span', 'lab', r[0])); li.appendChild(mk('span', 'val', r[1] + '%')); bar.appendChild(fill); li.appendChild(bar);
+    $('#bars').appendChild(li); UI.bars.push({ fill, v: r[1] / 100 });
+  });
+  const lab = (text, cls) => { const e = mk('span', 'lb ' + (cls || ''), text); labels.appendChild(e); return e; };
+  FRAGMENTS.forEach((f) => { const e = lab(f[0], f[2] ? 'warm' : 'cool'); e._long = f[0]; e._short = f[3] || f[0]; UI.lb.frag.push(e); });
+  TL.lanes.forEach((n, l) => UI.lb.lane.push(lab(n.toLowerCase(), l <= 1 ? 'cool' : 'warm')));
+  UI.lb.day = lab('day 0', 'day');
+  ['Observe', 'Understand', 'Change', 'Verify', 'Measure', 'Learn'].forEach((n, k) => UI.lb.st.push(lab(k + 1 + '  ' + n, '')));
+  RECORDS.labels.forEach((n) => UI.lb.rec.push(lab(n, 'cool')));
+}
+
+function setLabel(e, x, y, o, ax, ay) {
+  if (o < 0.01) { if (e._o !== 0) { e.style.opacity = 0; e._o = 0; } return; }
+  e.style.transform = 'translate(' + x.toFixed(1) + 'px,' + y.toFixed(1) + 'px) translate(' + ax + '%,' + ay + '%)';
+  const oo = Math.round(o * 50) / 50;
+  if (e._o !== oo) { e.style.opacity = oo; e._o = oo; }
+}
+
+// The trace in the corner. One simulated heart drives the particles, this line and the sound.
+function ecgWave(ph) {
+  const g = (c, w) => Math.exp(-Math.pow((ph - c) / w, 2));
+  return 0.12 * g(0.06, 0.03) - 0.14 * g(0.135, 0.012) + g(0.16, 0.014) - 0.22 * g(0.19, 0.014) + 0.26 * g(0.4, 0.06);
+}
+function EcgTrace(canvas) {
+  const ctx = canvas.getContext('2d'), n = 150, buf = new Float32Array(n);
+  let head = 0, carry = 0;
+  return {
+    push(dt, phase0, rate) {                     // rate: beats per second
+      carry += dt * 60; let k = Math.floor(carry); carry -= k; k = Math.min(k, n);
+      for (let i = 0; i < k; i++) { const ph = (((phase0 - ((k - 1 - i) * rate) / 60) % 1) + 1) % 1; buf[head] = ecgWave(ph); head = (head + 1) % n; }
+    },
+    draw() {
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      const grad = ctx.createLinearGradient(0, 0, w, 0); grad.addColorStop(0, 'rgba(102,235,207,0)'); grad.addColorStop(0.5, 'rgba(102,235,207,.55)'); grad.addColorStop(1, 'rgba(102,235,207,1)');
+      ctx.strokeStyle = grad; ctx.lineWidth = Math.max(1.5, w / 150); ctx.lineJoin = 'round'; ctx.beginPath();
+      for (let i = 0; i < n; i++) { const v = buf[(head + i) % n], x = (i / (n - 1)) * w, y = h * 0.72 - v * h * 0.6; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+      ctx.stroke();
+    },
+  };
+}
+
+// ---------------------------------------------------------------- sound: silent until the visitor turns it on
+function Sound() {
+  let ctx = null, master = null, wet = null, on = false, noise = null;
+  const drone = [];
+  function start() {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return false;
+    ctx = new AC();
+    master = ctx.createGain(); master.gain.value = 0; master.connect(ctx.destination);
+    // a room made from decaying noise
+    const len = Math.floor(ctx.sampleRate * 2.4), ir = ctx.createBuffer(2, len, ctx.sampleRate);
+    for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.8); }
+    const conv = ctx.createConvolver(); conv.buffer = ir;
+    wet = ctx.createGain(); wet.gain.value = 0.3; wet.connect(conv); conv.connect(master);
+    const nb = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate), nd = nb.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    noise = nb;
+    // drone: root, fifth and octave through a low-pass, breathing slowly
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 300; lp.Q.value = 0.5;
+    const dg = ctx.createGain(); dg.gain.value = 0.05; lp.connect(dg); dg.connect(master); dg.connect(wet);
+    [1, 1.5, 2].forEach((r, i) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = i === 2 ? 'sine' : 'triangle'; o.frequency.value = 55 * r; g.gain.value = [0.6, 0.28, 0.2][i];
+      o.connect(g); g.connect(lp); o.start(); drone.push({ o, r });
+    });
+    const lfo = ctx.createOscillator(), lg = ctx.createGain(); lfo.frequency.value = 0.07; lg.gain.value = 0.018; lfo.connect(lg); lg.connect(dg.gain); lfo.start();
+    return true;
+  }
+  function tone(f0, f1, peak, dur, delay, toWet) {
+    const t = ctx.currentTime + (delay || 0), o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(f0, t); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t + dur * 0.4);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(peak, t + 0.012); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(master); if (toWet) g.connect(wet);
+    o.start(t); o.stop(t + dur + 0.05);
+  }
+  return {
+    get on() { return on; },
+    toggle() {
+      if (!ctx) { try { if (!start()) return false; } catch (e) { return false; } }
+      on = !on;
+      if (on && ctx.state === 'suspended') ctx.resume().catch(() => {});
+      master.gain.setTargetAtTime(on ? 0.7 : 0, ctx.currentTime, 0.2);
+      return on;
+    },
+    beat(strength) { if (!on) return; tone(96, 54, 0.2 * strength, 0.2, 0); tone(80, 46, 0.12 * strength, 0.2, 0.15); },   // lub, dub
+    strike(base, warm) {                                    // inharmonic partials, each with its own decay
+      if (!on) return;
+      [1, 2.76, 5.4, 8.93].forEach((r, i) => tone(base * r, base * r, (warm ? 0.09 : 0.06) / (i + 1), 1.5 / (i + 1) + 0.2, i * 0.004, true));
+    },
+    arp(base) { if (!on) return; [1, 1.5, 2, 3].forEach((r, i) => tone(base * r, base * r, 0.05, 0.9, i * 0.09, true)); },
+    sweep() {                                               // a band of noise that opens on every chapter change
+      if (!on) return;
+      const t = ctx.currentTime, s = ctx.createBufferSource(), bp = ctx.createBiquadFilter(), g = ctx.createGain();
+      s.buffer = noise; bp.type = 'bandpass'; bp.Q.value = 1.4; bp.frequency.setValueAtTime(220, t); bp.frequency.exponentialRampToValueAtTime(2400, t + 0.7);
+      g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(0.035, t + 0.25); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+      s.connect(bp); bp.connect(g); g.connect(master); g.connect(wet); s.start(t); s.stop(t + 1);
+    },
+    root(f) { if (!ctx) return; drone.forEach((d) => d.o.frequency.setTargetAtTime(f * d.r, ctx.currentTime, 0.9)); },
+  };
+}
+
+// ---------------------------------------------------------------- the conductor
+const FOV = (35 * Math.PI) / 180, TANH = Math.tan(FOV / 2);
+const beatEnv = (ph) => Math.exp(-Math.pow((ph - 0.12) / 0.055, 2)) + 0.55 * Math.exp(-Math.pow((ph - 0.34) / 0.07, 2));
+
+function pickTier(caps) {
+  const T = [{ n: 160, dpr: 1, budget: 1.1e6 }, { n: 256, dpr: 1.5, budget: 2.4e6 }, { n: 384, dpr: 2, budget: 4.4e6 }];
+  if (typeof window.__HCH_TIER === 'number') return T[window.__HCH_TIER];
+  const soft = /swiftshader|llvmpipe|software|basic render/i.test(caps.renderer);
+  const coarse = matchMedia('(pointer:coarse)').matches;
+  const cores = navigator.hardwareConcurrency || 4, mem = navigator.deviceMemory || 4;
+  if (soft || (cores <= 4 && mem <= 2)) return T[0];
+  if (!coarse && cores >= 8 && caps.f32) return T[2];
+  return T[1];
+}
+
+function chapterAt(w) {
+  const L = CHAPTERS.length - 1;
+  let i = L;
+  for (let k = 0; k < L; k++) if (w < CHAPTERS[k + 1].start) { i = k; break; }
+  const c = CHAPTERS[i], hold = i === L ? c.len : c.len - TR, t = w - c.start;
+  const e = i === L ? 0 : clamp((t - hold) / TR, 0, 1);
+  return { i, u: clamp(t / hold, 0, 1), e, m: e * e * (3 - 2 * e) };
+}
+const chapterIndex = (id) => CHAPTERS.findIndex((c) => c.id === id);
+const CI = { model: chapterIndex('model'), timeline: chapterIndex('timeline'), loop: chapterIndex('loop'), record: chapterIndex('record') };
+const holdOf = (i) => CHAPTERS[i].len - TR;
+// the camera rests on each stop and travels between them
+const dwell = (g, max) => { const c = clamp(g, 0, max), f = Math.floor(c); return Math.min(f + sstep(0.22, 0.78, c - f), max); };
+function modelState(u) {
+  const g = ((u - 0.12) / 0.88) * 7 - 0.5;
+  return { sys: u < 0.1 ? -1 : clamp(Math.round(g), 0, 6), idx: dwell(g, 6), k: sstep(0.05, 0.15, u) };
+}
+const systemScroll = (k) => CHAPTERS[CI.model].start + (0.12 + ((k + 0.5) / 7) * 0.88) * holdOf(CI.model);
+const stationScroll = (k) => CHAPTERS[CI.loop].start + ((k + 0.5) / 6) * holdOf(CI.loop);
+
+function App() {
+  const root = document.documentElement, canvas = $('#gl'), track = $('#track'), loader = $('#loader');
+  const TEST = !!window.__HCH_TEST;
+  buildDom();
+  const sound = Sound();
+  let vw = innerWidth, vh = innerHeight, stableH = 0, lastW = 0, NARROW = false, GLON = false;
+
+  // ---------------- shared interface state (works with or without WebGL)
+  const horm = { s: 0, sm: 0, peak: 0, adapt: 0, over: 0, overSm: 0, last: -9, t: 0 };
+  const rec = { state: 'ask', t: 0, target: 0, ttl: 86400, lab: 0 };
+  const cur = { ch: -2, near: -1, sys: -2, station: -1, day: -1, dayIdx: -2, hover: -1, bpm: 0, roB: '', modelOn: false, cellOn: false };
+  const scroll = { target: 0, w: 0, vel: 0 };
+
+  function layout() {
+    vw = innerWidth; vh = innerHeight; NARROW = vw <= 900;
+    if (!stableH || Math.abs(vw - lastW) > 2 || Math.abs(vh - stableH) > stableH * 0.2) stableH = vh;   // ignore phone toolbars sliding
+    lastW = vw;
+    track.style.height = Math.round((W_END + 1) * stableH) + 'px';
+    CHAPTERS.forEach((c) => { c.anchorEl.style.top = Math.round((c.start + (c.start ? 0.05 : 0)) * stableH) + 'px'; });
+    readScroll();
+  }
+  function readScroll() { scroll.target = clamp((window.scrollY || window.pageYOffset || 0) / (stableH || 1), 0, W_END); }
+  function scrollToW(w) { window.scrollTo({ top: Math.round(w * stableH), behavior: REDUCE ? 'auto' : 'smooth' }); }
+  function jumpTo(y) { try { window.scrollTo({ top: y, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, y); } }
+
+  // ---------------- model chapter: system panel
+  const sysPanel = $('#sys-panel');
+  let sysRect = null, rectDirty = 0;
+  function showSystem(k) {
+    UI.sys.forEach((b, i) => b.setAttribute('aria-pressed', i === k ? 'true' : 'false'));
+    $('#s-model').classList.toggle('has-sys', k >= 0);
+    sysPanel.classList.toggle('off', k < 0);
+    if (k < 0) return;
+    const s = SYSTEMS[k];
+    scramble($('#sys-idx'), 'system ' + (k + 1) + ' of 7');
+    $('#sys-name').textContent = s.name; $('#sys-state').textContent = s.state; $('#sys-now').textContent = s.now;
+    const rows = $('#sys-rows'); rows.textContent = '';
+    s.rows.forEach((r) => {
+      const d = mk('div'), dd = mk('dd', '', r[1]);
+      if (r[2]) dd.appendChild(mk('small', '', r[2]));
+      d.appendChild(mk('dt', '', r[0])); d.appendChild(dd); rows.appendChild(d);
+    });
+    rectDirty = 3;
+    if (NARROW && UI.sys[k].scrollIntoView && GLON) { const ul = $('#systems'), b = UI.sys[k]; ul.scrollLeft = b.offsetLeft - ul.clientWidth / 2 + b.clientWidth / 2; }
+  }
+  UI.sys.forEach((b, k) => b.addEventListener('click', () => { if (GLON) scrollToW(systemScroll(k)); else showSystem(k); }));
+
+  // ---------------- loop chapter: stations
+  function showStation(k) {
+    UI.stations.forEach((li, i) => { li.classList.toggle('act', i === k); li.firstChild.setAttribute('aria-expanded', i === k ? 'true' : 'false'); });
+  }
+  UI.stations.forEach((li, k) => li.firstChild.addEventListener('click', () => { if (GLON) scrollToW(stationScroll(k)); else showStation(k); }));
+
+  // ---------------- hormesis: dose, recovery, adaptation
+  const doseEl = $('#dose'), doseFill = $('#dose-fill'), doseState = $('#dose-state'), doseBtn = $('#dose-btn'), pips = Array.from($('#pips').children);
+  const say = (t) => { if (doseState.textContent !== t) doseState.textContent = t; };
+  function applyDose() {
+    if (horm.adapt >= DOSE.max && horm.s <= 0) {                // start the demonstration over
+      horm.adapt = 0; pips.forEach((p) => p.classList.remove('on')); $('#adapt-n').textContent = '0'; doseBtn.textContent = 'Apply stress';
+      say('At rest. Press the cell to apply a stress.'); return;
+    }
+    horm.s = Math.min(horm.s + DOSE.step, 1.08); horm.peak = Math.max(horm.peak, horm.s); horm.last = horm.t;
+    if (horm.s >= DOSE.high) { horm.over = 1; say('Too much, too soon. Recovery has to come before the next dose.'); sound.strike(58, true); }
+    else if (horm.s >= DOSE.low) { say('An adaptive dose. Now let it recover.'); sound.strike(110, true); }
+    else { say('A small dose. Too little to adapt to.'); sound.strike(147, false); }
+  }
+  function hormTick(dt) {
+    horm.t += dt;
+    if (horm.s > 0 && horm.t - horm.last > 0.7) {
+      horm.s = Math.max(0, horm.s - DOSE.decay * dt);
+      if (horm.s === 0) {
+        if (horm.peak >= DOSE.high) say('Recovered, with nothing gained. The dose was too large.');
+        else if (horm.peak >= DOSE.low) {
+          horm.adapt = Math.min(horm.adapt + 1, DOSE.max);
+          pips.forEach((p, i) => p.classList.toggle('on', i < horm.adapt)); $('#adapt-n').textContent = String(horm.adapt);
+          say(horm.adapt < DOSE.max ? 'Recovered and adapted. The cell now carries more mitochondria.' : 'Three adaptations. Stress, recovery and adaptation, repeated.');
+          if (horm.adapt >= DOSE.max) doseBtn.textContent = 'Start over';
+          sound.arp(165);
+        } else say('Recovered. Nothing changed: the dose was too small.');
+        horm.peak = 0; horm.over = 0;
+      }
+    }
+    horm.sm = damp(horm.sm, horm.s, 9, dt); horm.overSm = damp(horm.overSm, horm.over, 5, dt);
+    const fill = Math.min(horm.sm, 1).toFixed(3);
+    if (fill !== horm.fill) { doseFill.style.transform = 'scaleX(' + fill + ')'; horm.fill = fill; }
+    if (horm.over !== horm.overCls) { doseEl.classList.toggle('over', horm.over > 0); horm.overCls = horm.over; }
+  }
+  doseBtn.addEventListener('click', () => { applyDose(); if (GLON) burstAt([0, 0, 0], 0.7); });
+
+  // ---------------- record: the consent handshake
+  const consent = $('#consent');
+  function setConsent(state) {
+    rec.state = state; rec.target = state === 'granted' ? 1 : 0; consent.dataset.state = state;
+    consent.querySelectorAll('[data-show]').forEach((d) => { d.hidden = d.dataset.show !== state; });
+    if (state === 'granted') { rec.ttl = 86400; sound.arp(131); } else sound.strike(98, false);
+    const first = consent.querySelector('[data-show="' + state + '"] button'); if (first && document.activeElement && consent.contains(document.activeElement)) first.focus();
+  }
+  $('#approve').addEventListener('click', () => setConsent('granted'));
+  $('#decline').addEventListener('click', () => setConsent('declined'));
+  $('#revoke').addEventListener('click', () => setConsent('ask'));
+  $('#again').addEventListener('click', () => setConsent('ask'));
+  setInterval(() => {
+    if (rec.state !== 'granted') return;
+    rec.ttl = Math.max(0, rec.ttl - 1);
+    const h = Math.floor(rec.ttl / 3600), m = Math.floor((rec.ttl % 3600) / 60), s = rec.ttl % 60, p = (n) => String(n).padStart(2, '0');
+    $('#ttl').textContent = p(h) + ':' + p(m) + ':' + p(s);
+  }, 1000);
+
+  // ---------------- access form: honest about being a preview
+  $('#ask').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const v = $('#email').value.trim(), ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+    $('#ask-note').textContent = ok ? 'This preview is not connected to an inbox yet, so nothing was sent.' : 'Enter an email address, like you@example.com.';
+  });
+
+  // ---------------- sound toggle
+  const soundBtn = $('#sound');
+  soundBtn.addEventListener('click', () => {
+    const on = sound.toggle();
+    soundBtn.textContent = on ? 'Sound on' : 'Sound off'; soundBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    if (on && cur.near >= 0) sound.root(CHAPTERS[cur.near].root);
+  });
+
+  // ---------------- loader
+  const ldPath = $('#ld-path'), ldStep = $('#ld-step');
+  let ldLen = 340; try { ldLen = ldPath.getTotalLength(); } catch (e) { ldLen = 340; }
+  ldPath.style.strokeDasharray = ldLen; ldPath.style.strokeDashoffset = ldLen;
+  const progress = (f, text) => { ldPath.style.strokeDashoffset = ldLen * (1 - f); ldStep.textContent = text; };
+  const nextFrame = () => new Promise((r) => requestAnimationFrame(() => r()));
+
+  function noGL() {
+    root.classList.add('no-gl'); loader.classList.add('done');
+    CHAPTERS.forEach((c) => c.sectionEl.classList.add('on'));
+    showSystem(0); showStation(0);
+    UI.days.forEach((li) => li.classList.add('past'));
+    UI.bars.forEach((b) => { b.fill.style.transform = 'scaleX(' + b.v + ')'; });
+    let t0 = performance.now();
+    (function tick(now) { hormTick(Math.min((now - t0) / 1000, 0.1)); t0 = now; requestAnimationFrame(tick); })(t0);
+  }
+
+  const caps = createGL(canvas);
+  if (!caps) { noGL(); return; }
+  // a lost graphics context (a phone waking up, a driver reset) is simplest to recover from by starting again
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); });
+  canvas.addEventListener('webglcontextrestored', () => { try { location.reload(); } catch (e) { /* stay on the frozen frame */ } });
+  const tier = pickTier(caps);
+  let engine = null, burstAt = () => {};
+
+  // ---------------- everything the engine needs for one frame
+  const view = m4.create(), proj = m4.create(), vp = m4.create(), basis = { r: [1, 0, 0], u: [0, 1, 0], f: [0, 0, -1] };
+  const S = {
+    shapeA: 'body', shapeB: 'body', morph: 0, time: 0, dt: 1 / 60, turb: 0.7, k: 0.04, damp: 5.2, beat: 0, breath: 0, adapt: 0, stress: 0, loopRot: -Math.PI,
+    rayO: [0, 0, 50], rayD: [0, 0, -1], ptrVel: [0, 0, 0], burstP: [0, 0, 0], ptrOn: 0, ptrR: 0.36, ptrPush: 9, frac: 1, burst: 0, burstR: 0, snap: false,
+    proj, view, basis, eye: [0, 0, 8], shift: [0, 0], floorW: 1, glow: 1, warm: 0, size: 0.0048, focus: 7, aperture: 1.2, beatPhase: 0, cursorX: tlX(0), cursorXt: tlX(0),
+    loopAct: 0, over: 0, scan: -9, anyAct: 0, sysW: new Float32Array(9), gain: 0.34, ca: 0.003, warp: 0, bloom: 0.62, fade: 0, exposure: 1,
+  };
+  const ptr = { x: 0, y: 0, nx: 0, ny: 0, lnx: 0, lny: 0, px: 0, py: 0, has: false, mouse: false, moved: -9, cx: 0, cy: 0, dx: 0, dy: 0, dt: 0, ds: 0, tgt: null };
+  const heart = { bpm: 58, phase: 0, agit: 0 };
+  const pose = {}, poseB = {}, pA = {}, pB = {}, KEYS = ['tx', 'ty', 'tz', 'd', 'yaw', 'pitch', 'sx', 'sy', 'ap', 'fo', 'floor', 'glow', 'warm', 'ptrR', 'push'];
+  let time = 0, intro = 0, started = false, resScale = 1;
+
+  function resolve(p, out) {
+    const asp = vw / vh;
+    out.tx = p.t[0]; out.ty = p.t[1]; out.tz = p.t[2];
+    out.yaw = NARROW && p.nyaw !== undefined ? p.nyaw : p.yaw; out.pitch = p.pitch === undefined ? 0.02 : p.pitch;
+    out.sx = NARROW ? 0 : p.sx || 0; out.sy = NARROW ? (p.nsy === undefined ? 0.42 : p.nsy) : p.sy || 0;
+    let avail = NARROW ? 0.9 : (1 - Math.abs(out.sx)) * 0.92;
+    if (!NARROW && p.fit) {                              // keep the subject inside the part of the window the layout leaves free
+      const pad = clamp(vw * 0.05, 18, 72), mid = vw <= 1180, textCol = (mid ? 27 : 29) * 16, sideCol = (mid ? 20 : 21.5) * 16, gap = mid ? 20 : 28;
+      let xL = pad, xR = vw - pad - 22;
+      if (p.fit === 'right' || p.fit === 'mid') xL = pad + textCol + gap;
+      if (p.fit === 'mid' || p.fit === 'time') xR = vw - pad - sideCol - gap;
+      if (p.fit === 'time') xL = pad + 118;
+      out.sx = (xL + xR) / vw - 1; avail = Math.max((xR - xL) / vw, p.minAvail || 0.24);
+    }
+    const hw = (NARROW && p.nhw) || p.hw || 0.8;
+    out.d = Math.max(NARROW ? p.nd || p.d * 1.35 : p.d, hw / (TANH * asp * avail));
+    out.ap = p.ap; out.fo = p.fo || 0; out.floor = p.floor || 0; out.glow = p.glow === undefined ? 1 : p.glow; out.warm = p.warm || 0; out.ptrR = p.ptrR || 0.36; out.push = p.push || 9;
+    return out;
+  }
+  const mixPose = (a, b, t, out) => { for (let i = 0; i < KEYS.length; i++) { const k = KEYS[i]; out[k] = a[k] + (b[k] - a[k]) * t; } return out; };
+  const sysCam = {};
+  function sysPose(k, out) {
+    const c = SYSTEMS[k].cam;
+    sysCam.t = c.t; sysCam.d = c.d; sysCam.yaw = c.yaw; sysCam.pitch = 0.03; sysCam.sx = 0.02; sysCam.sy = 0; sysCam.ap = c.ap; sysCam.fo = 0; sysCam.floor = 1; sysCam.glow = 1; sysCam.warm = 0;
+    sysCam.ptrR = 0.24; sysCam.push = 2.5; sysCam.hw = 0.5; sysCam.nd = c.d * 1.45; sysCam.nsy = 0.46; sysCam.fit = 'mid';
+    return resolve(sysCam, out);
+  }
+  function chapterPose(i, u, out) {
+    const id = CHAPTERS[i].id;
+    resolve(POSES[id], out);
+    if (id === 'model') {
+      const ms = modelState(u);
+      if (ms.k > 0) { const f = Math.floor(ms.idx); sysPose(f, pA); sysPose(Math.min(f + 1, 6), pB); mixPose(pA, pB, ms.idx - f, pA); mixPose(out, pA, ms.k, out); }
+    } else if (id === 'timeline') out.tx = S.cursorX * (NARROW ? 1 : 0.16);
+    return out;
+  }
+  function project(x, y, z, out) {
+    const cw = vp[3] * x + vp[7] * y + vp[11] * z + vp[15];
+    out[0] = ((vp[0] * x + vp[4] * y + vp[8] * z + vp[12]) / cw * 0.5 + 0.5) * vw;
+    out[1] = (1 - ((vp[1] * x + vp[5] * y + vp[9] * z + vp[13]) / cw * 0.5 + 0.5)) * vh;
+    out[2] = cw;
+    return out;
+  }
+  const P2 = [0, 0, 0], P3 = [0, 0, 0];
+
+  // world-space points that select a system when the pointer is near them
+  const PICK = [[0, [0, 1.66, 0.02]], [1, [0.02, 1.305, 0.05]], [2, [-0.09, 1.36, 0.02]], [2, [0.1, 1.38, 0.02]], [3, [-0.08, 1.18, 0.05]], [4, [0.0, 1.02, 0.06]], [5, [0.1, 0.5, 0.02]], [5, [-0.1, 0.5, 0.02]], [5, [0.22, 1.3, 0]], [5, [-0.22, 1.3, 0]], [5, [0.1, 0.2, 0]], [5, [-0.1, 0.2, 0]], [6, [0.07, 1.14, 0.03]], [6, [0, 1.475, 0.04]]].map((p) => [p[0], bw(p[1][0], p[1][1], p[1][2])]);
+  const CALL = [[0.06, 1.69, 0.04], [0.02, 1.305, 0.05], [-0.085, 1.35, 0.03], [-0.07, 1.18, 0.05], [0.03, 1.03, 0.06], [0, 1.2, -0.07], [0.05, 1.145, 0.02]].map((p) => bw(p[0], p[1], p[2]));
+
+  burstAt = (p, strength) => { S.burstP = p; S.burst = strength; S.burstR = 0; };
+
+  function sizeCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, tier.dpr) * resScale;
+    let w = Math.max(2, Math.round(vw * dpr)), h = Math.max(2, Math.round(vh * dpr));
+    if (w * h > tier.budget) { const k = Math.sqrt(tier.budget / (w * h)); w = Math.round(w * k); h = Math.round(h * k); }
+    if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+    engine.resize(w, h);
+  }
+
+  // ---------------- per-frame interface
+  const ecg = EcgTrace($('#ecg')), bpmEl = $('#bpm'), roA = $('#ro-a'), roB = $('#ro-b'), prog = $('#prog'), cueEl = $('#cue');
+  const callout = $('#callout'), coPath = $('#co-path'), coDot = $('#co-dot'), cursorEl = $('#cursor'), tipEl = $('#tip'), verdict = $('#verdict');
+  const fragC = { c: null, asp: 0 };
+
+  function enter(i) {
+    const id = CHAPTERS[i].id;
+    scramble(roA, i + 1 + ' of ' + CHAPTERS.length + '  ' + CHAPTERS[i].nav.toLowerCase());
+    CHAPTERS[i].sectionEl.querySelectorAll('[data-sc]').forEach((e) => scramble(e, e.dataset.t || (e.dataset.t = e.textContent)));
+    sound.sweep(); sound.root(CHAPTERS[i].root);
+    if (id === 'clinicians') UI.bars.forEach((b, k) => { b.fill.style.transitionDelay = k * 70 + 'ms'; b.fill.style.transform = 'scaleX(' + b.v + ')'; });
+    else UI.bars.forEach((b) => { b.fill.style.transitionDelay = '0ms'; b.fill.style.transform = 'scaleX(0)'; });
+  }
+
+  function uiFrame(dt, c, id, nx, sysNow, day, act) {
+    // which chapter's words are on screen
+    let show = c.e > 0.6 ? nx : c.e > 0.1 ? -1 : c.i;
+    if (intro < 0.42) show = -1;
+    if (show !== cur.ch) {
+      CHAPTERS.forEach((ch, k) => ch.sectionEl.classList.toggle('on', k === show));
+      if (show >= 0) enter(show);
+      cur.ch = show;
+    }
+    const near = c.e > 0.5 ? nx : c.i;
+    if (near !== cur.near) { CHAPTERS.forEach((ch, k) => ch.railEl.classList.toggle('cur', k === near)); cur.near = near; }
+    const pg = (scroll.w / W_END).toFixed(4);
+    if (pg !== cur.pg) { prog.style.transform = 'scaleX(' + pg + ')'; cur.pg = pg; }
+    const cueOn = show === 0 && scroll.target < 0.03 && intro >= 1;
+    if (cueOn !== cur.cue) { cueEl.classList.toggle('on', cueOn); cur.cue = cueOn; }
+
+    // ---- model
+    if (sysNow !== cur.sys) { showSystem(sysNow); cur.sys = sysNow; }
+    if (rectDirty > 0 && --rectDirty === 0) sysRect = sysPanel.getBoundingClientRect();
+    const modelOn = id === 'model' && c.e < 0.06 && show === c.i;
+    let coOn = false;
+    if (modelOn && sysNow >= 0 && sysRect && sysRect.width > 0) {
+      const a = CALL[sysNow]; project(a[0], a[1], a[2], P2);
+      if (P2[2] > 0 && P2[0] > -40 && P2[0] < vw + 40 && P2[1] > 0 && P2[1] < vh) {
+        const tx = NARROW ? sysRect.left + 26 : sysRect.left, ty = sysRect.top, ex = NARROW ? tx : Math.max(tx - 42, P2[0] + 8), ey = NARROW ? ty - 26 : ty;
+        coPath.setAttribute('d', 'M' + P2[0].toFixed(1) + ' ' + P2[1].toFixed(1) + 'L' + ex.toFixed(1) + ' ' + ey.toFixed(1) + 'L' + tx.toFixed(1) + ' ' + ty.toFixed(1));
+        coDot.setAttribute('cx', P2[0].toFixed(1)); coDot.setAttribute('cy', P2[1].toFixed(1)); coDot.setAttribute('r', (4 + 2.5 * S.beat).toFixed(1));
+        coOn = true;
+      }
+    }
+    if (coOn !== cur.co) { callout.classList.toggle('on', coOn); cur.co = coOn; }
+    // hover over the body picks a system; hover over the cell offers a dose
+    let tip = '';
+    cur.modelOn = modelOn; cur.cellOn = id === 'hormesis' && c.e < 0.1;
+    const hover = ptr.mouse && ptr.has && !ptr.overUi ? pickSystem(ptr.x, ptr.y) : -1;
+    if (hover >= 0) tip = SYSTEMS[hover].name;
+    cur.hover = hover;
+    if (ptr.mouse && ptr.has && !ptr.overUi && cellHit(ptr.x, ptr.y)) tip = horm.adapt >= DOSE.max && horm.s <= 0 ? 'Press to start over' : 'Press to apply stress';
+
+    // ---- timeline
+    const tlOn = wOf(c, nx, 'timeline');
+    if (id === 'timeline') {
+      let di = -1; for (let k = 0; k < DAYS.length; k++) if (DAYS[k][0] <= day + 0.5) di = k;
+      if (di !== cur.dayIdx) { UI.days.forEach((li, k) => { li.classList.toggle('past', k <= di); li.classList.toggle('cur', k === di); }); verdict.classList.toggle('on', di === DAYS.length - 1); cur.dayIdx = di; }
+      const dr = Math.round(day); if (dr !== cur.day) { UI.lb.day.textContent = 'day ' + dr; cur.day = dr; }
+    }
+    const tlo = sstep(0.75, 1, tlOn);
+    for (let l = 0; l < 8; l++) {
+      project(NARROW ? S.cursorX - 1.4 : tlX(0) - 0.16, tlY(l), 0, P2);
+      if (NARROW) setLabel(UI.lb.lane[l], 14, P2[1] - 12, tlo * 0.9, 0, -100); else setLabel(UI.lb.lane[l], P2[0], P2[1], tlo * 0.9, -100, -50);
+    }
+    project(S.cursorX, tlY(0) + 0.3, 0, P2); setLabel(UI.lb.day, P2[0], P2[1], tlo, -50, -100);
+
+    // ---- loop
+    if (act !== cur.station) { showStation(act); cur.station = act; }
+    const lo = sstep(0.75, 1, wOf(c, nx, 'loop'));
+    for (let k = 0; k < 6; k++) {
+      const a = stationAngle(k) + S.loopRot, r = LOOP.R + 0.42, lx = Math.cos(a) * r, ly = Math.sin(a) * r;
+      project(lx, ly * Math.cos(LOOP.tilt), ly * Math.sin(LOOP.tilt), P2);
+      setLabel(UI.lb.st[k], P2[0], P2[1], lo * (k === act ? 1 : 0.5), -50, -50);
+    }
+
+    // ---- fragments
+    const fo = sstep(0.8, 1, wOf(c, nx, 'fragments'));
+    if (fo > 0.01) {
+      if (!fragC.c) fragC.c = fragmentCentres(shapeAspect);
+      const sc = shapeAspect >= 0.85 ? 1 : 0.78;
+      for (let k = 0; k < FRAGMENTS.length; k++) {
+        const cc = fragC.c[k];
+        project(cc[0] + 0.05 * Math.sin(time * 0.4 + k * 2.3), cc[1] - 0.46 * sc + 0.07 * Math.sin(time * 0.55 + k * 1.7), cc[2], P2);
+        setLabel(UI.lb.frag[k], P2[0], P2[1], fo * 0.92, -50, 0);
+      }
+    } else if (UI.lb.frag[0]._o) for (let k = 0; k < FRAGMENTS.length; k++) setLabel(UI.lb.frag[k], 0, 0, 0, 0, 0);
+
+    // ---- record
+    rec.lab = damp(rec.lab, rec.t >= 1 ? 1 : 0, rec.t >= 1 ? 2 : 12, dt);
+    const ro = sstep(0.8, 1, wOf(c, nx, 'record')) * sstep(0.6, 0.95, rec.lab);
+    for (let j = 0; j < 5; j++) { project(-RECORDS.w / 2 + (j - 2) * 0.05, recordY(j) + RECORDS.h / 2 + 0.05, (j - 2) * 0.1, P2); setLabel(UI.lb.rec[j], P2[0], P2[1], ro, 0, -100); }
+
+    // ---- instruments
+    const b = Math.round(heart.bpm); if (b !== cur.bpm) { bpmEl.textContent = b; cur.bpm = b; }
+    ecg.push(dt, heart.phase, heart.bpm / 60); ecg.draw();
+    let rb = '';
+    if (show >= 0) {
+      const sid = CHAPTERS[show].id;
+      rb = sid === 'overview' || sid === 'access' ? engine.COUNT.toLocaleString('en-US') + ' points, n = 1'
+        : sid === 'fragments' ? '17 sources, 0 shared timelines'
+        : sid === 'model' ? (sysNow >= 0 ? 'system ' + (sysNow + 1) + ' of 7' : '7 systems, 1 model')
+        : sid === 'timeline' ? 'day ' + String(Math.round(day)).padStart(2, '0') + ' of 91'
+        : sid === 'loop' ? 'step ' + (act + 1) + ' of 6'
+        : sid === 'hormesis' ? 'dose ' + horm.sm.toFixed(2) + ', adaptations ' + horm.adapt
+        : sid === 'record' ? (rec.state === 'granted' ? 'consent granted' : rec.state === 'declined' ? 'request declined' : 'consent pending')
+        : 'adherence 81%';
+    }
+    if (rb !== cur.roB) { roB.textContent = rb; cur.roB = rb; }
+
+    // ---- cursor ring
+    if (ptr.mouse) {
+      ptr.cx = damp(ptr.cx, ptr.x, 16, dt); ptr.cy = damp(ptr.cy, ptr.y, 16, dt);
+      cursorEl.style.transform = 'translate(' + ptr.cx.toFixed(1) + 'px,' + ptr.cy.toFixed(1) + 'px)';
+      const st = ptr.overLink ? 'link' : tip ? 'act' : '';
+      if (st !== cursorEl._st) { cursorEl.classList.toggle('link', st === 'link'); cursorEl.classList.toggle('act', st === 'act'); cursorEl._st = st; }
+      if (tip !== tipEl._t) { if (tip) tipEl.textContent = tip; tipEl.classList.toggle('on', !!tip); tipEl._t = tip; }
+      if (tip) tipEl.style.transform = 'translate(' + (ptr.cx + 46).toFixed(1) + 'px,' + (ptr.cy - 8).toFixed(1) + 'px)';
+    }
+  }
+  function pickSystem(x, y) {
+    if (!cur.modelOn) return -1;
+    let best = 70 * 70, hit = -1;
+    for (let k = 0; k < PICK.length; k++) {
+      const p = PICK[k][1]; project(p[0], p[1], p[2], P3);
+      const d2 = (P3[0] - x) * (P3[0] - x) + (P3[1] - y) * (P3[1] - y);
+      if (P3[2] > 0 && d2 < best) { best = d2; hit = PICK[k][0]; }
+    }
+    return hit;
+  }
+  function cellHit(x, y) {
+    if (!cur.cellOn) return false;
+    project(0, 0, 0, P3);
+    return Math.hypot(P3[0] - x, P3[1] - y) < ((CELL.R * (vh * 0.5 * proj[5])) / Math.max(P3[2], 0.1)) * 1.05;
+  }
+  const wOf = (c, nx, name) => (CHAPTERS[c.i].id === name ? 1 - c.m : 0) + (nx !== c.i && CHAPTERS[nx].id === name ? c.m : 0);
+  let shapeAspect = 1.6, bodyData = null;
+  function setAspect(a) {
+    shapeAspect = a; fragC.c = null;
+    POSES.fragments.hw = a >= 0.85 ? clamp(2.5 * a, 2.6, 4.4) * 1.13 + 0.5 : FRAG_TALL_HW;
+    root.classList.toggle('ringed', a >= 0.85);
+    UI.lb.frag.forEach((e) => { e.textContent = a >= 0.85 ? e._long : e._short; });
+  }
+
+  // ---------------- one frame
+  function frame(dt) {
+    time += dt;
+    const prev = scroll.w;
+    scroll.w = damp(scroll.w, scroll.target, 5.5, dt);
+    if (Math.abs(scroll.target - scroll.w) < 0.0004) scroll.w = scroll.target;
+    scroll.vel = (scroll.w - prev) / Math.max(dt, 1e-3);
+    const c = chapterAt(scroll.w), id = CHAPTERS[c.i].id, L = CHAPTERS.length - 1, nx = Math.min(c.i + 1, L);
+    if (started && intro < 1) intro = Math.min(1, intro + dt / 2.8);
+
+    // sub-states driven by scroll
+    const ms = id === 'model' ? modelState(c.u) : null, sysNow = ms && c.e < 0.08 ? ms.sys : -1;
+    for (let k = 1; k <= 7; k++) S.sysW[k] = damp(S.sysW[k], sysNow === k - 1 ? 1 : 0, 6, dt);
+    S.anyAct = damp(S.anyAct, sysNow >= 0 ? 1 : 0, 5, dt);
+    const day = id === 'timeline' ? clamp((c.u - 0.05) / 0.87, 0, 1) * 91 : c.i < CI.timeline ? 0 : 91;
+    S.cursorXt = tlX(day); S.cursorX = damp(S.cursorX, S.cursorXt, 9, dt);
+    const lg = id === 'loop' ? c.u * 6 - 0.5 : c.i < CI.loop ? 0 : 5, act = clamp(Math.round(lg), 0, 5);
+    S.loopAct = damp(S.loopAct, act, 7, dt);
+    S.loopRot = damp(S.loopRot, -Math.PI + (dwell(lg, 5) * Math.PI) / 3, 7, dt);
+
+    // which two shapes, and how far between them
+    rec.t += clamp(rec.target - rec.t, -dt * 0.8, dt * 0.8);
+    const eff = (i) => (i === CI.record ? (rec.t > 0.5 ? 'rec' : 'code') : CHAPTERS[i].shape);
+    let warp;
+    if (c.i === CI.record && c.e <= 0) { S.shapeA = 'code'; S.shapeB = 'rec'; S.morph = sstep(0, 1, rec.t); warp = 0.3 * Math.sin(Math.PI * S.morph); }
+    else { S.shapeA = eff(c.i); S.shapeB = eff(nx); S.morph = c.m; warp = 0.8 * Math.sin(Math.PI * c.m); }
+    const sv = Math.abs(scroll.vel);
+    S.turb = damp(S.turb, 0.05 + 1.9 * Math.sin(Math.PI * S.morph) + Math.min(sv * 0.25, 0.8) + (1 - intro) * 0.8 + horm.sm * 0.5, 5, dt);
+    S.warp = REDUCE ? 0 : warp;
+    S.ca = 0.003 + Math.min(sv * 0.012, 0.04) + (REDUCE ? 0 : 0.018 * Math.sin(Math.PI * c.m));
+
+    // camera
+    chapterPose(c.i, c.u, pose);
+    if (c.m > 0 && nx !== c.i) { chapterPose(nx, 0, poseB); mixPose(pose, poseB, c.m, pose); }
+    ptr.px = damp(ptr.px, ptr.has && !REDUCE ? ptr.nx : 0, 3.5, dt); ptr.py = damp(ptr.py, ptr.has && !REDUCE ? ptr.ny : 0, 3.5, dt);
+    const yaw = pose.yaw + (REDUCE ? 0 : 0.07 * Math.sin(time * 0.21)) + ptr.px * 0.16, pitch = pose.pitch - ptr.py * 0.07, cp = Math.cos(pitch);
+    const eye = S.eye; eye[0] = pose.tx + pose.d * Math.sin(yaw) * cp; eye[1] = pose.ty + pose.d * Math.sin(pitch); eye[2] = pose.tz + pose.d * Math.cos(yaw) * cp;
+    m4.lookAt(view, eye, [pose.tx, pose.ty, pose.tz], basis);
+    m4.perspective(proj, FOV, vw / vh, 0.1, 90); proj[8] = -pose.sx; proj[9] = -pose.sy;
+    m4.mul(vp, proj, view);
+
+    // pointer ray and pointer velocity, in world space
+    const dx = (ptr.nx - pose.sx) / proj[0], dy = (ptr.ny - pose.sy) / proj[5], r = basis.r, u = basis.u, f = basis.f;
+    let rx = r[0] * dx + u[0] * dy + f[0], ry = r[1] * dx + u[1] * dy + f[1], rz = r[2] * dx + u[2] * dy + f[2];
+    const rl = Math.hypot(rx, ry, rz) || 1; rx /= rl; ry /= rl; rz /= rl;
+    S.rayO = eye; S.rayD[0] = rx; S.rayD[1] = ry; S.rayD[2] = rz;
+    const k = pose.d / Math.max(dt, 1e-3);
+    let pvx = ((ptr.nx - ptr.lnx) / proj[0]) * k, pvy = ((ptr.ny - ptr.lny) / proj[5]) * k; ptr.lnx = ptr.nx; ptr.lny = ptr.ny;
+    const pvl = Math.hypot(pvx, pvy); if (pvl > 5) { pvx *= 5 / pvl; pvy *= 5 / pvl; }
+    for (let a = 0; a < 3; a++) S.ptrVel[a] = damp(S.ptrVel[a], r[a] * pvx + u[a] * pvy, 12, dt);
+    S.ptrOn = damp(S.ptrOn, ptr.has && (ptr.mouse || time - ptr.moved < 1.2) && intro >= 1 ? 1 : 0, 6, dt);
+
+    // the model's heart: moving the pointer fast agitates it, and it recovers more slowly than it rises
+    const ag = clamp(Math.min(pvl, 5) / 5, 0, 1) * (ptr.has ? 1 : 0);
+    heart.agit = damp(heart.agit, ag, ag > heart.agit ? 2.2 : 0.3, dt);
+    const bt = 58 + 46 * heart.agit + 30 * horm.sm + 2.5 * Math.sin(time * 0.31);
+    heart.bpm = damp(heart.bpm, bt, bt > heart.bpm ? 1.3 : 0.4, dt);
+    heart.phase += (dt * heart.bpm) / 60;
+    if (heart.phase >= 1) { heart.phase -= Math.floor(heart.phase); sound.beat(0.7 + 0.3 * pose.floor); }
+    S.beatPhase = heart.phase; S.beat = beatEnv(heart.phase); S.breath = Math.sin(time * TAU * 0.2);
+
+    S.burst *= Math.exp(-2.4 * dt); S.burstR += 3.4 * dt;
+    hormTick(dt);
+
+    S.time = time; S.dt = dt; S.shift[0] = pose.sx; S.shift[1] = pose.sy;
+    S.focus = pose.d + pose.fo; S.aperture = pose.ap * lerp(0.2, 1, sstep(0.3, 1, intro)); S.floorW = pose.floor; S.glow = pose.glow; S.warm = pose.warm; S.ptrR = pose.ptrR; S.ptrPush = pose.push;
+    S.k = lerp(0.035, 1, sstep(0.05, 0.8, intro)); S.fade = sstep(0, 0.3, intro);
+    S.adapt = horm.adapt; S.stress = horm.sm; S.over = horm.overSm;
+    S.scan = c.i === CI.record || nx === CI.record ? Math.sin(time * 0.8) * 1.5 : -9;
+    engine.frame(S);
+    S.snap = false;
+
+    uiFrame(dt, c, id, nx, sysNow, day, act);
+  }
+
+  // ---------------- input
+  window.addEventListener('scroll', readScroll, { passive: true });
+  let rz = 0;
+  window.addEventListener('resize', () => {
+    clearTimeout(rz);
+    rz = setTimeout(() => {
+      layout(); rectDirty = 2;
+      if (!engine || !GLON) return;
+      sizeCanvas();
+      const a = vw / vh;                              // the fragment layout depends on the window's proportions
+      if ((a < 0.85) !== (shapeAspect < 0.85) || Math.abs(a - shapeAspect) > 0.2) { setAspect(a); engine.setShape('frag', buildFragments(engine.COUNT, 11, bodyData, a)); }
+    }, 140);
+  });
+  const uiSel = 'a,button,input,label,.copy,.side,.top,.vitals';
+  function movePtr(e) {
+    ptr.x = e.clientX; ptr.y = e.clientY; ptr.nx = (e.clientX / vw) * 2 - 1; ptr.ny = 1 - (e.clientY / vh) * 2;
+    if (!ptr.has) { ptr.lnx = ptr.nx; ptr.lny = ptr.ny; ptr.cx = ptr.x; ptr.cy = ptr.y; }
+    ptr.has = true; ptr.moved = time;
+    const t = e.target && e.target.closest ? e.target : null;
+    ptr.overUi = !!(t && t.closest(uiSel)); ptr.overLink = !!(t && t.closest('a,button'));
+    if (e.pointerType === 'mouse') { if (!ptr.mouse) { ptr.mouse = true; root.classList.add('ring'); } if (!ptr.ringOn) { cursorEl.classList.add('on'); ptr.ringOn = true; } }
+  }
+  window.addEventListener('pointermove', movePtr, { passive: true });
+  window.addEventListener('pointerdown', (e) => { movePtr(e); ptr.lnx = ptr.nx; ptr.lny = ptr.ny; ptr.dx = e.clientX; ptr.dy = e.clientY; ptr.dt = performance.now(); ptr.ds = window.scrollY; ptr.tgt = e.target; }, { passive: true });
+  window.addEventListener('pointerup', (e) => {
+    if (!started || !ptr.tgt) return;
+    const still = Math.hypot(e.clientX - ptr.dx, e.clientY - ptr.dy) < 8 && Math.abs(window.scrollY - ptr.ds) < 4 && performance.now() - ptr.dt < 600;   // a press that became a scroll is not a click
+    const onUi = ptr.tgt.closest && ptr.tgt.closest(uiSel);
+    ptr.tgt = null;
+    if (!still || onUi) return;
+    const sys = pickSystem(e.clientX, e.clientY);       // works for a tap as well as a click
+    if (sys >= 0) { scrollToW(systemScroll(sys)); return; }
+    const hit = [S.eye[0] + S.rayD[0] * S.focus, S.eye[1] + S.rayD[1] * S.focus, S.eye[2] + S.rayD[2] * S.focus];
+    if (cellHit(e.clientX, e.clientY)) { applyDose(); burstAt(hit, 0.8); return; }
+    burstAt(hit, 1); sound.strike(196 + 80 * Math.random(), false);
+  }, { passive: true });
+  root.addEventListener('mouseleave', () => { if (ptr.mouse) { ptr.has = false; cursorEl.classList.remove('on'); ptr.ringOn = false; } });
+  root.addEventListener('mouseenter', () => { if (ptr.mouse) ptr.has = true; });
+
+  // ---------------- keeping up: if frames are slow, first lower the resolution, then draw half the particles.
+  // Each step is undone if it did not help, which is what happens when the display itself caps the frame rate.
+  const perf = { n: 0, acc: 0, stage: 0, base: 0 };
+  function perfTick(real) {
+    if (perf.stage > 2 || intro < 1 || document.hidden) return;
+    perf.n++; perf.acc += real;
+    if (perf.n < 50) return;
+    const avg = perf.acc / perf.n, slow = avg > 0.024; perf.n = 0; perf.acc = 0;
+    const halve = () => { perf.base = avg; S.frac = 0.5; S.size *= 1.25; perf.stage = 2; };
+    if (perf.stage === 0) { if (slow) { perf.base = avg; resScale = 0.8; sizeCanvas(); perf.stage = 1; } }
+    else if (perf.stage === 1) {
+      if (avg > perf.base * 0.9) { resScale = 1; sizeCanvas(); }
+      if (slow) halve(); else perf.stage = 3;
+    } else {
+      if (avg > perf.base * 0.9) { S.frac = 1; S.size /= 1.25; }
+      perf.stage = 3;
+    }
+  }
+
+  // ---------------- start
+  (async function boot() {
+    try {
+      layout();
+      progress(0.08, 'Compiling shaders'); await nextFrame(); await nextFrame();
+      engine = Engine(caps, tier);
+      const n = engine.COUNT; setAspect(vw / vh);
+      S.size = (0.0048 * 256) / tier.n;
+      progress(0.25, 'Sampling a body from ' + n.toLocaleString('en-US') + ' points'); await nextFrame();
+      const body = buildBody(n, 7); bodyData = body; engine.setShape('body', body);
+      progress(0.5, 'Scattering it across 17 sources'); await nextFrame();
+      engine.setShape('frag', buildFragments(n, 11, body, shapeAspect));
+      progress(0.62, 'Laying out 91 days'); await nextFrame();
+      engine.setShape('time', buildTimeline(n, 13)); engine.setShape('loop', buildLoop(n, 17));
+      progress(0.78, 'Growing a cell'); await nextFrame();
+      engine.setShape('cell', buildCell(n, 19));
+      progress(0.9, 'Preparing consent'); await nextFrame();
+      engine.setShape('code', buildCode(n, 23)); engine.setShape('rec', buildRecords(n, 29));
+      sizeCanvas();
+      progress(1, 'Ready'); await nextFrame();
+    } catch (err) { if (window.console) console.warn('HCH: falling back to the static page.', err); noGL(); return; }
+    GLON = true;
+    // deep links and reduced motion skip the assembly
+    const deep = location.hash.length > 1 && document.getElementById(location.hash.slice(1));
+    if (deep) jumpTo(deep.offsetTop);
+    readScroll(); scroll.w = scroll.target;
+    if (REDUCE || deep || scroll.w > 0.3) { intro = 1; S.snap = true; S.turb = 0.05; }
+    S.cursorX = tlX(chapterAt(scroll.w).i < CI.timeline ? 0 : 91);
+    loader.classList.add('done'); started = true;
+    if (TEST) {
+      window.__hch = { settle(w, nf) { this.jump(w); intro = 1; S.turb = 0.05; for (let i = 0; i < (nf || 3); i++) { S.snap = i < 2; frame(1 / 30); } }, skipIntro() { intro = 1; S.snap = true; S.turb = 0.05; }, S, step(nf, dt) { for (let i = 0; i < nf; i++) frame(dt || 1 / 60); }, jump(w) { jumpTo(Math.round(w * stableH)); readScroll(); scroll.w = scroll.target; }, info: () => ({ w: scroll.w, end: W_END, n: engine.COUNT, tier, renderer: caps.renderer, narrow: NARROW, bpm: heart.bpm, adapt: horm.adapt, rec: rec.state }), CHAPTERS, systemScroll, stationScroll };
+      return;
+    }
+    let lastT = performance.now();
+    (function loop(now) {
+      const real = (now - lastT) / 1000; lastT = now;
+      frame(clamp(real, 1 / 240, 1 / 20));
+      perfTick(real);
+      requestAnimationFrame(loop);
+    })(lastT);
+  })();
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', App); else App();
+
+})();
+</script>
+</body>
+</html>
